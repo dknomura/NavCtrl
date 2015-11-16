@@ -9,10 +9,6 @@
 #import "DAO.h"
 
 @interface DAO()
-@property (nonatomic, strong) Company *apple;
-@property (nonatomic, strong) Company *samsung;
-@property (nonatomic, strong) Company *windows;
-@property (nonatomic, strong) Company *sony;
 
 @end
 
@@ -31,27 +27,7 @@
     
 }
 
--(void) addProduct:(Product*)product forCurrentCompany: (Company*) company
-{
-    [company.products addObject:product];
-}
 
--(void) removeProduct:(Product*)product forCurrentCompany: (Company*) company
-{
-    [company.products removeObject:product];
-}
-
--(void) addCompany: (Company*) company
-{
-    [self.companyList addObject:company];
-    [self.companyNameList addObject:company.name];
-}
-
--(void) removeCompany: (Company*) company
-{
-    [self.companyList removeObject:company];
-    [self.companyNameList removeObject:company.name];
-}
 
 -(void) updateNameForCompany: (Company*) currentCompany toString:(NSString*) string
 {
@@ -78,6 +54,27 @@
     updatedProduct.website = website;
 }
 
+-(void) addProduct:(Product*)product forCurrentCompany: (Company*) company
+{
+    [company.products addObject:product];
+}
+
+-(void) removeProduct:(Product*)product forCurrentCompany: (Company*) company
+{
+    [company.products removeObject:product];
+}
+
+-(void) addCompany: (Company*) company
+{
+    [self.companyList addObject:company];
+    [self.companyNameList addObject:company.name];
+}
+
+-(void) removeCompany: (Company*) company
+{
+    [self.companyList removeObject:company];
+    [self.companyNameList removeObject:company.name];
+}
 
 
 -(void)createCompaniesAndProducts
@@ -91,6 +88,8 @@
     self.samsung.name = @"Samsung";
     self.windows.name = @"Windows";
     self.sony.name = @"Sony";
+    
+    
     
     
     Product *ipad = [[Product alloc] init];
@@ -128,11 +127,21 @@
     self.samsung.products = [NSMutableArray arrayWithObjects:galaxyS6, galaxyNote, galaxyTab, nil];
     self.windows.products = [NSMutableArray arrayWithObjects: xperiaZ, xperiaTab, smartBandTalk, nil];
     self.sony.products = [NSMutableArray arrayWithObjects: lumia, surfacePro, microsoftBand, nil];
+
+        //GET RESULTS FROM DICTIONARY AND PUT THEM IN self.Company.StockTicker
+        
+        
+    
+    
+    
     
     
     self.companyList = [NSMutableArray arrayWithObjects:self.apple, self.samsung, self.windows, self.sony, nil];
     
     self.companyNameList = [NSMutableArray arrayWithObjects:self.apple.name, self.samsung.name, self.windows.name, self.sony.name, nil];
+    
+    
+    
     
 }
 

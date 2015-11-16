@@ -10,6 +10,12 @@
 #import "CompanyViewController.h"
 #import "DAO.h"
 
+@interface NavControllerAppDelegate()
+
+
+
+@end
+
 @implementation NavControllerAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
@@ -17,9 +23,9 @@
     
     // Override point for customization after application launch.
     DAO *dao = [DAO sharedInstance];
-    [dao createCompaniesAndProducts];
+//    [dao createCompaniesAndProducts];
     
-    UIViewController *rootController =
+    CompanyViewController *rootController =
     [[CompanyViewController alloc]
      initWithNibName:@"CompanyViewController" bundle:nil];
     

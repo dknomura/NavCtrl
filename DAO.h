@@ -9,11 +9,18 @@
 #import <Foundation/Foundation.h>
 #import "Company.h"
 #import "Product.h"
+#import "StockQuote.h"
 
 
 @interface DAO : NSObject
 
 @property (nonatomic, strong) Company *currentCompany;
+
+@property (nonatomic, strong) Company *apple;
+@property (nonatomic, strong) Company *samsung;
+@property (nonatomic, strong) Company *windows;
+@property (nonatomic, strong) Company *sony;
+
 @property (nonatomic, strong) NSMutableArray *companyList;
 
 @property (nonatomic, strong) NSMutableArray *companyNameList;

@@ -33,6 +33,7 @@
 		AAEEE4991BF99EA8001533A8 /* ItemInputViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4961BF99EA8001533A8 /* ItemInputViewController.m */; };
 		AAEEE49A1BF99EA8001533A8 /* UpdateProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4981BF99EA8001533A8 /* UpdateProductViewController.m */; };
 		AAEEE49D1BF99ED3001533A8 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEEE49C1BF99ED3001533A8 /* WebKit.framework */; };
+		AAEEE4A01BF9A4CD001533A8 /* StockQuote.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE49F1BF9A4CD001533A8 /* StockQuote.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -83,6 +84,8 @@
 		AAEEE4971BF99EA8001533A8 /* UpdateProductViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateProductViewController.h; sourceTree = SOURCE_ROOT; };
 		AAEEE4981BF99EA8001533A8 /* UpdateProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateProductViewController.m; sourceTree = SOURCE_ROOT; };
 		AAEEE49C1BF99ED3001533A8 /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
+		AAEEE49E1BF9A4CD001533A8 /* StockQuote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StockQuote.h; sourceTree = "<group>"; };
+		AAEEE49F1BF9A4CD001533A8 /* StockQuote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = StockQuote.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -226,6 +229,8 @@
 				AAEEE4841BF99DFC001533A8 /* DAO.m */,
 				AAEEE4851BF99DFC001533A8 /* Product.h */,
 				AAEEE4861BF99DFC001533A8 /* Product.m */,
+				AAEEE49E1BF9A4CD001533A8 /* StockQuote.h */,
+				AAEEE49F1BF9A4CD001533A8 /* StockQuote.m */,
 			);
 			name = DAO;
 			sourceTree = "<group>";
@@ -344,6 +349,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAEEE4891BF99DFC001533A8 /* Product.m in Sources */,
+				AAEEE4A01BF9A4CD001533A8 /* StockQuote.m in Sources */,
 				AAEEE49A1BF99EA8001533A8 /* UpdateProductViewController.m in Sources */,
 				AAEEE4881BF99DFC001533A8 /* DAO.m in Sources */,
 				AAEEE4991BF99EA8001533A8 /* ItemInputViewController.m in Sources */,
