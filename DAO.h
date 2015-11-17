@@ -25,6 +25,27 @@
 
 @property (nonatomic, strong) NSMutableArray *companyNameList;
 
+@property (nonatomic, strong) NSUserDefaults *userDefaults;
+
+@property (nonatomic, strong) NSFileManager *fileManager;
+
+@property (nonatomic, strong) NSString *directoryPathString;
+
+@property (nonatomic, strong) NSString *filePathString;
+
+
+-(void) createFileDirectory;
+
+
+-(void) saveFileWithCompanyList: (NSMutableArray*) companyList;
+
+-(void) loadFile;
+
+
+-(void) loadDefaults;
+
+-(void) saveDefaultsWithCompanyList:(NSMutableArray*) companyList;
+
 
 -(void) addProduct:(Product*)product forCurrentCompany: (Company*) company;
 

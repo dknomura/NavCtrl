@@ -23,17 +23,26 @@
     
     // Override point for customization after application launch.
     DAO *dao = [DAO sharedInstance];
+    [dao createCompaniesAndProducts];
+    [dao createFileDirectory];
+
+//    
+//    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+//    NSData *isData = [userDefaults objectForKey:@"SAVEDCompaniesList"];
+    NSData *isData = [dao.fileManager contentsAtPath:dao.filePathString];
+    
+    if (isData){
+        [dao loadFile];
+    } else {
+        [dao saveFileWithCompanyList:dao.companyList];
+    }
 //    [dao createCompaniesAndProducts];
     
-    CompanyViewController *rootController =
-    [[CompanyViewController alloc]
-     initWithNibName:@"CompanyViewController" bundle:nil];
+    CompanyViewController *rootController =[[CompanyViewController alloc]initWithNibName:@"CompanyViewController" bundle:nil];
     
-    self.navigationController = [[UINavigationController alloc]
-                                 initWithRootViewController:rootController];
+    self.navigationController = [[UINavigationController alloc]initWithRootViewController:rootController];
     
-    self.window = [[UIWindow alloc]
-                   initWithFrame:[[UIScreen mainScreen] bounds]];
+    self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     //  self.window addSubview:self.navigationController.view];
     [self.window setRootViewController:self.navigationController];
     [self.window makeKeyAndVisible];

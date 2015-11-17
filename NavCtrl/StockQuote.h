@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface StockQuote : NSObject
+@interface StockQuote : NSObject <NSCoding>
 @property (nonatomic, strong) NSString *symbol;
 @property (nonatomic, strong) NSString *quote;
 @property (nonatomic, strong) NSString *change;

@@ -42,16 +42,15 @@
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
     
-    [self setStockQuotes];
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     self.title = @"Mobile device makers";
     
-    
-    
+
 }
+
 
 -(void) viewWillAppear:(BOOL)animated
 {
@@ -66,72 +65,17 @@
 }
 
 #pragma mark - Table view data source
--(void) setStockQuotes
-{
-    
-    
-    
-    NSURL *url = [NSURL URLWithString:@"https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22aapl%22%2C%22msft%22%2C%22sne%22%2C%22SSNLF%22)&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback="];
-    
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
-    
-    [request setHTTPMethod:@"GET"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
-    
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * data, NSURLResponse * response, NSError * error) {
-        NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&error];
-        if (error){
-            NSLog(@"Error with json get request: %@", error.localizedDescription);
-            abort();
-        }
-        NSDictionary *resultsDictionary = [[jsonDictionary objectForKey:@"query"] objectForKey:@"results"];
-        NSArray *quotesArray = [resultsDictionary objectForKey:@"quote"];
-        
-        self.dao.apple.stockQuote = [[StockQuote alloc] init];
-        self.dao.sony.stockQuote = [[StockQuote alloc] init];
-        self.dao.windows.stockQuote = [[StockQuote alloc] init];
-        self.dao.samsung.stockQuote = [[StockQuote alloc] init];
-        
-        self.dao.apple.stockQuote.symbol = [quotesArray[0] objectForKey:@"symbol"];
-        self.dao.apple.stockQuote.quote = [quotesArray[0] objectForKey:@"LastTradePriceOnly"];
-        self.dao.apple.stockQuote.change = [quotesArray[0] objectForKey:@"Change"];
-        
-        self.dao.windows.stockQuote.symbol = [quotesArray[1] objectForKey:@"symbol"];
-        self.dao.windows.stockQuote.quote = [quotesArray[1] objectForKey:@"LastTradePriceOnly"];
-        self.dao.windows.stockQuote.change = [quotesArray[1] objectForKey:@"Change"];
-        
-        self.dao.sony.stockQuote.symbol = [quotesArray[2] objectForKey:@"symbol"];
-        self.dao.sony.stockQuote.quote = [quotesArray[2] objectForKey:@"LastTradePriceOnly"];
-        self.dao.sony.stockQuote.change = [quotesArray[2] objectForKey:@"Change"];
-        
-        self.dao.samsung.stockQuote.symbol = [quotesArray[3] objectForKey:@"symbol"];
-        self.dao.samsung.stockQuote.quote = [quotesArray[3] objectForKey:@"LastTradePriceOnly"];
-        self.dao.samsung.stockQuote.change = [quotesArray[3] objectForKey:@"Change"];
-        
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-        
-    }];
-    [task resume];
-}
 
 
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
     return [self.dao.companyList count];
 }
@@ -174,7 +118,9 @@
     
     cell.textLabel.text = currentCompany.name;
     if (currentCompany.stockQuote.quote){
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@, %@", currentCompany.stockQuote.quote, currentCompany.stockQuote.change];
+     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@, %@", currentCompany.stockQuote.quote, currentCompany.stockQuote.change];
+    }else {
+        cell.detailTextLabel.text = nil;
     }
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@ icon.png", currentCompany.name]];
     
@@ -206,13 +152,18 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
         [self.dao.companyList removeObjectAtIndex:indexPath.row];
+//        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
+        [self.dao saveFileWithCompanyList:self.dao.companyList];
+
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         Company *company = [[Company alloc]init];
         company.name = @"New Company";
-        Company *newCompany = [company mutableCopy];
-        [self.dao addCompany:newCompany];
+        [self.dao addCompany:company];
+//        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
+        [self.dao saveFileWithCompanyList:self.dao.companyList];
+
         [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     }
 }
@@ -221,6 +172,11 @@
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
+    
+    Company *companyToMove = self.dao.companyList [fromIndexPath.row];
+    [self.dao.companyList removeObjectAtIndex:fromIndexPath.row];
+    [self.dao.companyList insertObject:companyToMove atIndex:toIndexPath.row];
+    [self.dao saveFileWithCompanyList:self.dao.companyList];
 }
 
 
@@ -239,8 +195,9 @@
 // In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSString *pvcTitle = [[self.dao.companyList objectAtIndex:indexPath.row] name];
     
-    self.productViewController.title = [[self.dao.companyList objectAtIndex:indexPath.row] name];
+    self.productViewController.title = pvcTitle;
     
     [self.navigationController
      pushViewController:self.productViewController
@@ -265,6 +222,56 @@
 ////        self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
 ////    }
 //}
+
+
+-(void) setStockQuotes
+{
+    
+    NSURL *url = [NSURL URLWithString:@"https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22aapl%22%2C%22msft%22%2C%22sne%22%2C%22SSNLF%22)&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback="];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+    
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * data, NSURLResponse * response, NSError * error) {
+        NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+        if (error){
+            NSLog(@"Error with json get request: %@", error.localizedDescription);
+            abort();
+        }
+        NSDictionary *resultsDictionary = [[jsonDictionary objectForKey:@"query"] objectForKey:@"results"];
+        NSArray *quotesArray = [resultsDictionary objectForKey:@"quote"];
+        
+
+        
+        self.dao.apple.stockQuote.symbol = [quotesArray[0] objectForKey:@"symbol"];
+        self.dao.apple.stockQuote.quote = [quotesArray[0] objectForKey:@"LastTradePriceOnly"];
+        self.dao.apple.stockQuote.change = [quotesArray[0] objectForKey:@"Change"];
+        
+        self.dao.windows.stockQuote.symbol = [quotesArray[1] objectForKey:@"symbol"];
+        self.dao.windows.stockQuote.quote = [quotesArray[1] objectForKey:@"LastTradePriceOnly"];
+        self.dao.windows.stockQuote.change = [quotesArray[1] objectForKey:@"Change"];
+        
+        self.dao.sony.stockQuote.symbol = [quotesArray[2] objectForKey:@"symbol"];
+        self.dao.sony.stockQuote.quote = [quotesArray[2] objectForKey:@"LastTradePriceOnly"];
+        self.dao.sony.stockQuote.change = [quotesArray[2] objectForKey:@"Change"];
+        
+        self.dao.samsung.stockQuote.symbol = [quotesArray[3] objectForKey:@"symbol"];
+        self.dao.samsung.stockQuote.quote = [quotesArray[3] objectForKey:@"LastTradePriceOnly"];
+        self.dao.samsung.stockQuote.change = [quotesArray[3] objectForKey:@"Change"];
+        
+                
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.tableView reloadData];
+        });
+        
+    }];
+    [task resume];
+}
 
 
 

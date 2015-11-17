@@ -16,7 +16,6 @@
 @property (strong, nonatomic) NSMutableDictionary *companyAndCompanyNamesDictionary;
 @property (strong, nonatomic) DAO *dao;
 @property (strong, nonatomic) Company *currentCompany;
-
 @property (retain, nonatomic) IBOutlet UpdateProductViewController *productUpdateController;
 
 
@@ -33,6 +32,8 @@
     return self;
 }
 
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -47,6 +48,7 @@
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
 }
+
 
 - (void)viewWillAppear:(BOOL)animated {
     
@@ -78,14 +80,12 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 1;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
     return [self.currentCompany.products count];
 }
@@ -153,6 +153,9 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
         [self.currentCompany.products removeObjectAtIndex:indexPath.row];
+//        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
+        [self.dao saveFileWithCompanyList:self.dao.companyList];
+
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
@@ -160,6 +163,9 @@
         product.name = @"New Product";
         //        Product *newProduct = [product mutableCopy];
         [self.currentCompany.products insertObject:product atIndex:indexPath.row];
+//        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
+        [self.dao saveFileWithCompanyList:self.dao.companyList];
+
         [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }
@@ -170,6 +176,12 @@
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
+    
+    Product *productToMove = self.currentCompany.products[fromIndexPath.row];
+    [self.currentCompany.products removeObjectAtIndex:fromIndexPath.row];
+    [self.currentCompany.products insertObject:productToMove atIndex:toIndexPath.row];
+    [self.dao saveFileWithCompanyList:self.dao.companyList];
+
 }
 
 

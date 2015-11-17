@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-@interface Product : NSObject <NSMutableCopying>
+@interface Product : NSObject <NSCoding>
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *website;
 @end

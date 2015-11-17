@@ -10,6 +10,7 @@
 
 @interface DAO()
 
+
 @end
 
 @implementation DAO
@@ -27,32 +28,71 @@
     
 }
 
+#pragma mark -Save to file method
 
-
--(void) updateNameForCompany: (Company*) currentCompany toString:(NSString*) string
+-(void) saveFileWithCompanyList: (NSMutableArray*) companyList
 {
-    currentCompany.name = string;
-//    for (Company *company in self.companyList){
-//        if ([currentCompany.name isEqualToString:company.name]){
-//            company.name = string;
-//        }
-//    }
     
+    NSData *encodedData = [NSKeyedArchiver archivedDataWithRootObject: companyList];
+    
+    [encodedData writeToFile:self.filePathString atomically:false];
 }
 
 
--(void) updateProductsForCompany: (Company*) company toProducts:(NSMutableArray*) updatedProducts
+-(void) loadFile
 {
-    company.products = updatedProducts;
-
+    NSError *error;
+    NSData *encodedData = [[NSData alloc] initWithContentsOfFile:self.filePathString options:0 error:&error];
+    NSMutableArray *savedCompanyList = [NSKeyedUnarchiver unarchiveObjectWithData:encodedData];
+    self.companyList = savedCompanyList;
+    
+//    if (error){
+//        NSLog(@"error loading url: %@", error);
+//    } else {
+//        NSMutableArray *savedCompanyList = [NSKeyedUnarchiver unarchiveObjectWithData:encodedData];
+//        self.companyList = savedCompanyList;
+//    }
 }
 
--(void) updateProduct:(Product *)updatedProduct forCurrentCompany:(Company *)currentCompany withName:(NSString*) name andWebsite:(NSString*) website
+
+-(void) createFileDirectory
 {
+    self.fileManager = [NSFileManager defaultManager];
+    self.directoryPathString = @"/Users/adityanarayan/Desktop/Daniel Nomura/Section 3-2 2/File/holder";
+    NSError *error;
+    
+    [self.fileManager createDirectoryAtPath:self.directoryPathString withIntermediateDirectories:false attributes:nil error:&error];
+    
+    if (error){
+        NSLog(@"Error creating directory: %@", error.localizedDescription);
+    }
+    
+    self.filePathString = [NSString stringWithFormat: @"%@/defaultFile", self.directoryPathString];
 
-    updatedProduct.name = name;
-    updatedProduct.website = website;
 }
+
+#pragma mark -NSUserDefaults methods
+//-(void) saveDefaultsWithCompanyList:(NSMutableArray*) companyList
+//{
+//    NSData *encodedData = [NSKeyedArchiver archivedDataWithRootObject:companyList];
+//    self.userDefaults = [NSUserDefaults standardUserDefaults];
+//    [self.userDefaults setObject:encodedData forKey:@"SAVEDCompaniesList"];
+//    [self.userDefaults synchronize];
+//    
+//}
+//
+//
+//-(void) loadDefaults
+//{
+//    self.userDefaults = [NSUserDefaults standardUserDefaults];
+//    NSData *encodedData = [self.userDefaults objectForKey:@"SAVEDCompaniesList"];
+//    NSMutableArray *savedCompaniesList = [NSKeyedUnarchiver unarchiveObjectWithData:encodedData];
+//    self.companyList = savedCompaniesList;
+//}
+
+
+#pragma mark- Update/Deleting Company/Product
+
 
 -(void) addProduct:(Product*)product forCurrentCompany: (Company*) company
 {
@@ -77,6 +117,8 @@
 }
 
 
+
+
 -(void)createCompaniesAndProducts
 {
     self.apple = [[Company alloc] init];
@@ -90,7 +132,10 @@
     self.sony.name = @"Sony";
     
     
-    
+    self.apple.stockQuote = [[StockQuote alloc] init];
+    self.sony.stockQuote = [[StockQuote alloc] init];
+    self.windows.stockQuote = [[StockQuote alloc] init];
+    self.samsung.stockQuote = [[StockQuote alloc] init];
     
     Product *ipad = [[Product alloc] init];
     Product *ipod = [[Product alloc] init];
@@ -105,22 +150,22 @@
     Product *surfacePro = [[Product alloc] init];
     Product *microsoftBand = [[Product alloc] init];;
     
-    ipad.name = @"iPad Air"; ipad.website = @"http://www.apple.com/ipad-air-2/";
-    ipod.name = @"iPod Touch"; ipod.website = @"http://www.apple.com/ipod-touch/";
-    iphone.name = @"iPhone 6s"; iphone.website = @"http://www.apple.com/iphone-6s/";
+    ipad.name = @"iPad Air"; ipad.website = @"https://www.apple.com/ipad-air-2/";
+    ipod.name = @"iPod Touch"; ipod.website = @"https://www.apple.com/ipod-touch/";
+    iphone.name = @"iPhone 6s"; iphone.website = @"https://www.apple.com/iphone-6s/";
     
-    galaxyS6.name = @"Galaxy S6"; galaxyS6.website = @"http://www.samsung.com/us/explore/galaxy-s6-edge-plus-features-and-specs/?cid=ppc-";
-    galaxyNote.name = @"Galaxy Note 5"; galaxyNote.website = @"http://www.techtimes.com/articles/105942/20151114/blackberry-priv-vs-samsung-galaxy-note-5-vs-google-nexus-6p-to-priv-or-not-to-priv.htm";
-    galaxyTab.name = @"Galaxy Tab"; galaxyTab.website = @"http://www.samsung.com/us/mobile/galaxy-tab/";
+    galaxyS6.name = @"Galaxy S6"; galaxyS6.website = @"https://www.samsung.com/us/explore/galaxy-s6-edge-plus-features-and-specs/?cid=ppc-";
+    galaxyNote.name = @"Galaxy Note 5"; galaxyNote.website = @"https://www.techtimes.com/articles/105942/20151114/blackberry-priv-vs-samsung-galaxy-note-5-vs-google-nexus-6p-to-priv-or-not-to-priv.htm";
+    galaxyTab.name = @"Galaxy Tab"; galaxyTab.website = @"https://www.samsung.com/us/mobile/galaxy-tab/";
     
     
-    xperiaZ.name = @"Xperia Z"; xperiaZ.website = @"http://www.sonymobile.com/global-en/products/phones/xperia-z/";
-    xperiaTab.name = @"Xperia Z3 tablet"; xperiaTab.website = @"http://www.sonymobile.com/us/products/tablets/xperia-z3-tablet-compact/";
-    smartBandTalk.name = @"SmartBand Talk"; smartBandTalk.website = @"http://www.sonymobile.com/global-en/products/smartwear/smartband-talk-swr30/";
+    xperiaZ.name = @"Xperia Z"; xperiaZ.website = @"https://www.sonymobile.com/global-en/products/phones/xperia-z/";
+    xperiaTab.name = @"Xperia Z3 tablet"; xperiaTab.website = @"https://www.sonymobile.com/us/products/tablets/xperia-z3-tablet-compact/";
+    smartBandTalk.name = @"SmartBand Talk"; smartBandTalk.website = @"https://www.sonymobile.com/global-en/products/smartwear/smartband-talk-swr30/";
     
     
     lumia.name = @"Lumia 950"; lumia.website = @"http://www.microsoft.com/en-us/mobile/phone/lumia950/";
-    surfacePro.name = @"Surface Pro 3 tablet"; surfacePro.website = @"https://www.microsoft.com/surface/en-us/devices/surface-pro-3";
+    surfacePro.name = @"Surface Pro 3 tablet"; surfacePro.website = @"http://www.microsoft.com/surface/en-us/devices/surface-pro-3";
     microsoftBand.name = @"Microsoft Band 2"; microsoftBand.website = @"http://www.microsoftstore.com/store/msusa/en_US/pdp/Microsoft-Band-2/productID.324438600";
     
     self.apple.products = [NSMutableArray arrayWithObjects:ipad, ipod, iphone, nil];
@@ -144,5 +189,7 @@
     
     
 }
+
+
 
 @end

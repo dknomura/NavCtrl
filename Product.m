@@ -9,20 +9,18 @@
 #import "Product.h"
 
 @implementation Product
--(id) mutableCopyWithZone:(NSZone *)zone
-{
-    Product *product = [[Product alloc] init];
-    product.name = [_name mutableCopyWithZone:zone];
-    product.website = [_website mutableCopyWithZone:zone];
-    return product;
+
+- (void)encodeWithCoder:(NSCoder *)aCoder{
+    [aCoder encodeObject:self.name forKey:@"NAME_KEY"];
+    [aCoder encodeObject:self.website forKey:@"WEBSITE_KEY"];
 }
 
--(id) mutableCopy
-{
-    Product *product = [[Product alloc] init];
-    product.name = [_name mutableCopy];
-    product.website = [_website mutableCopy];
-    return product;
+-(id)initWithCoder:(NSCoder *)aDecoder{
+    if(self = [super init]){
+        self.name = [aDecoder decodeObjectForKey:@"NAME_KEY"];
+        self.website = [aDecoder decodeObjectForKey:@"WEBSITE_KEY"];
+    }
+    return self;
 }
 
 @end

@@ -51,7 +51,12 @@
 }
 - (IBAction)save:(id)sender
 {
-    [self.dao updateProduct:self.currentProduct forCurrentCompany:self.currentCompany withName:self.productTextField.text andWebsite:self.websiteTextField.text];
+    self.currentProduct.name = self.productTextField.text;
+    self.currentProduct.website = self.websiteTextField.text;
+    
+//    [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
+    [self.dao saveFileWithCompanyList:self.dao.companyList];
+
     
     [self.navigationController popViewControllerAnimated:YES];
     

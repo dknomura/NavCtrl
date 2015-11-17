@@ -9,20 +9,20 @@
 #import "Company.h"
 
 @implementation Company
--(id) mutableCopyWithZone:(NSZone *)zone
-{
-    Company *company = [[Company alloc] init];
-    company.name = [_name mutableCopyWithZone:zone];
-    company.products = [_products mutableCopyWithZone:zone];
-    return company;
+
+- (void)encodeWithCoder:(NSCoder *)aCoder{
+    [aCoder encodeObject:self.name forKey:@"NAME_KEY"];
+    [aCoder encodeObject:self.products forKey:@"PRODUCTS_KEY"];
+    [aCoder encodeObject:self.stockQuote forKey:@"STOCKQUOTE_KEY"];
 }
 
--(id) mutableCopy
-{
-    Company *company = [[Company alloc] init];
-    company.name = [_name mutableCopy];
-    company.products = [_products mutableCopy];
-    return company;
+-(id)initWithCoder:(NSCoder *)aDecoder{
+    if(self = [super init]){
+        self.name = [aDecoder decodeObjectForKey:@"NAME_KEY"];
+        self.products = [aDecoder decodeObjectForKey:@"PRODUCTS_KEY"];
+        self.stockQuote = [aDecoder decodeObjectForKey:@"STOCKQUOTE_KEY"];
+    }
+    return self;
 }
 
 @end

@@ -37,16 +37,36 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+
+
 -(void) viewWillAppear:(BOOL)animated
 {
     self.companyTextField.text = self.currentCompany.name;
-    self.productTextField1.text = [self.currentCompany.products [0] name];
-    self.productTextField2.text = [self.currentCompany.products [1] name];
-    self.productTextField3.text = [self.currentCompany.products [2] name];
     
-    self.websiteTextField1.text = [self.currentCompany.products [0] website];
-    self.websiteTextField2.text = [self.currentCompany.products [1] website];
-    self.websiteTextField3.text = [self.currentCompany.products [2] website];
+    NSInteger numberOfProducts = [self.currentCompany.products count];
+    
+    if (numberOfProducts > 0){
+        self.productTextField1.text = [self.currentCompany.products [0] name];
+    }
+    if (numberOfProducts > 1) {
+        self.productTextField2.text = [self.currentCompany.products [1] name];
+    }
+    if (numberOfProducts > 2){
+        self.productTextField3.text = [self.currentCompany.products [2] name];
+    }
+    if (numberOfProducts > 0){
+        self.websiteTextField1.text = [self.currentCompany.products [0] website];
+    }
+    
+    if (numberOfProducts > 1){
+        self.websiteTextField2.text = [self.currentCompany.products [1] website];
+
+    }
+    if (numberOfProducts > 2) {
+        self.websiteTextField3.text = [self.currentCompany.products [2] website];
+
+    }
 
     
 
@@ -68,13 +88,16 @@
     product3.name = self.productTextField3.text;
     product3.website = self.websiteTextField3.text;
     
-    NSMutableArray *products = [NSMutableArray arrayWithObjects:product1, product2, product3, nil];
+    NSMutableArray *productsList = [NSMutableArray arrayWithObjects:product1, product2, product3, nil];
 
-    [self.dao updateProductsForCompany:self.currentCompany toProducts:products];
-    
-    [self.dao updateNameForCompany:self.currentCompany toString:self.companyTextField.text];
+    self.currentCompany.products = productsList;
     
     
+    self.currentCompany.name = self.companyTextField.text;
+    
+//    [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
+    [self.dao saveFileWithCompanyList:self.dao.companyList];
+
     
     self.companyTextField.text = nil;
     self.productTextField1.text = nil;
@@ -87,52 +110,6 @@
 
 
     [self.navigationController popViewControllerAnimated:YES];
-
-    ////    if ([[self.navigationController presentingViewController] isKindOfClass: [ProductViewController class]]){
-    ////        NSString *currentCompanyString = [NSString stringWithString:self.title];
-    ////        Company *currentCompany = [[Company alloc] init];
-    ////
-    //
-    //
-    //
-    //    BOOL isCompanyNew = TRUE;
-    //    BOOL isProductNew = TRUE;
-    //
-    //
-    //    if (![self.companyTextField.text isEqualToString:@""]){
-    //        for (Company *company in self.dao.companyNameList){
-    //            if(company.name == self.companyTextField.text){
-    //                isCompanyNew = FALSE;
-    //                currentCompany = company;
-    //            }
-    //        }
-    //        if (isCompanyNew){
-    //            newCompany.name = self.companyTextField.text;
-    //            [self.dao addCompany:newCompany];
-    //            currentCompany = newCompany;
-    //        }
-    //        isCompanyNew = TRUE;
-    //    }
-    //
-    //    if (![self.productTextField1.text isEqualToString:@""]){
-    //        if (![self.websiteTextField1.text isEqualToString:@""]){
-    //            newProduct1.website = self.websiteTextField1.text;
-    //        }
-    //        for (Product *product in currentCompany.products){
-    //            if(product.name == self.productTextField1.text){
-    //                isProductNew = FALSE;
-    //                if (![self.websiteTextField1.text isEqualToString:@""]){
-    //                    [self.dao addProduct:product forCurrentCompany:currentCompany];
-    //                }
-    //            }
-    //            if (isProductNew){
-    //                newProduct1.name = self.productTextField1.text;
-    //            }
-    //    
-    //        }
-    //
-    //    }
-
 }
 
 
