@@ -10,6 +10,7 @@
 #import "Company.h"
 #import "Product.h"
 #import "StockQuote.h"
+#import <sqlite3.h>
 
 
 @interface DAO : NSObject
@@ -55,9 +56,17 @@
 
 -(void) removeCompany: (Company*) company;
 
--(void) updateNameForCompany: (Company*) company toString:(NSString*)string;
+-(void) deleteCompanyFromDB:(Company *) company;
 
--(void) updateProduct:(Product *)updatedProduct forCurrentCompany:(Company *)currentCompany withName:(NSString*) name andWebsite:(NSString*) website;
+-(void) updateCompanyList;
+-(void) loadCompanyList;
+
+-(void) addCompanyToDB: (Company*) company;
+
+-(void) databaseAddProduct:(Product*)product fromCompany:(Company*)company;
+-(void) databaseDeleteProduct:(Product*) product fromCompany:(Company*) company;
+
+
 
 -(void) updateProductsForCompany: (Company*) company toProducts:(NSMutableArray*) updatedProducts;
 

@@ -7,6 +7,8 @@
 //
 
 #import "UpdateProductViewController.h"
+#import <sqlite3.h>
+
 
 @interface UpdateProductViewController ()
 @property (retain, nonatomic) IBOutlet UITextField *productTextField;
@@ -55,7 +57,7 @@
     self.currentProduct.website = self.websiteTextField.text;
     
 //    [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-    [self.dao saveFileWithCompanyList:self.dao.companyList];
+    [self.dao updateCompanyList];
 
     
     [self.navigationController popViewControllerAnimated:YES];

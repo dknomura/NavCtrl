@@ -9,6 +9,7 @@
 #import "CompanyViewController.h"
 #import "ProductViewController.h"
 #import "ItemInputViewController.h"
+#import <sqlite3.h>
 
 @interface CompanyViewController ()
 @property (strong, nonatomic) DAO* dao;
@@ -120,7 +121,7 @@
     if (currentCompany.stockQuote.quote){
      cell.detailTextLabel.text = [NSString stringWithFormat:@"%@, %@", currentCompany.stockQuote.quote, currentCompany.stockQuote.change];
     }else {
-        cell.detailTextLabel.text = nil;
+        cell.detailTextLabel.text = @"No stock information available";
     }
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@ icon.png", currentCompany.name]];
     
@@ -152,18 +153,18 @@
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
         [self.dao.companyList removeObjectAtIndex:indexPath.row];
+        [self.dao updateCompanyList];
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao saveFileWithCompanyList:self.dao.companyList];
 
+        
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         Company *company = [[Company alloc]init];
         company.name = @"New Company";
-        [self.dao addCompany:company];
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao saveFileWithCompanyList:self.dao.companyList];
-
+        [self.dao.companyList insertObject:company atIndex:indexPath.row];
+        [self.dao updateCompanyList];
         [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     }
 }
@@ -176,7 +177,7 @@
     Company *companyToMove = self.dao.companyList [fromIndexPath.row];
     [self.dao.companyList removeObjectAtIndex:fromIndexPath.row];
     [self.dao.companyList insertObject:companyToMove atIndex:toIndexPath.row];
-    [self.dao saveFileWithCompanyList:self.dao.companyList];
+    [self.dao updateCompanyList];
 }
 
 
@@ -246,25 +247,17 @@
         NSDictionary *resultsDictionary = [[jsonDictionary objectForKey:@"query"] objectForKey:@"results"];
         NSArray *quotesArray = [resultsDictionary objectForKey:@"quote"];
         
+        NSUInteger companyCount = [self.dao.companyList count];
+        int t= (companyCount < 4) ? companyCount : 4;
+        for (int i = 0; i<t; i++){
+            Company *company = self.dao.companyList[i];
+            company.stockQuote = [[StockQuote alloc] init];
+            company.stockQuote.symbol = [quotesArray[i] objectForKey:@"symbol"];
+            company.stockQuote.quote = [quotesArray[i] objectForKey:@"LastTradePriceOnly"];
+            company.stockQuote.change = [quotesArray[i] objectForKey:@"Change"];
+        }
 
         
-        self.dao.apple.stockQuote.symbol = [quotesArray[0] objectForKey:@"symbol"];
-        self.dao.apple.stockQuote.quote = [quotesArray[0] objectForKey:@"LastTradePriceOnly"];
-        self.dao.apple.stockQuote.change = [quotesArray[0] objectForKey:@"Change"];
-        
-        self.dao.windows.stockQuote.symbol = [quotesArray[1] objectForKey:@"symbol"];
-        self.dao.windows.stockQuote.quote = [quotesArray[1] objectForKey:@"LastTradePriceOnly"];
-        self.dao.windows.stockQuote.change = [quotesArray[1] objectForKey:@"Change"];
-        
-        self.dao.sony.stockQuote.symbol = [quotesArray[2] objectForKey:@"symbol"];
-        self.dao.sony.stockQuote.quote = [quotesArray[2] objectForKey:@"LastTradePriceOnly"];
-        self.dao.sony.stockQuote.change = [quotesArray[2] objectForKey:@"Change"];
-        
-        self.dao.samsung.stockQuote.symbol = [quotesArray[3] objectForKey:@"symbol"];
-        self.dao.samsung.stockQuote.quote = [quotesArray[3] objectForKey:@"LastTradePriceOnly"];
-        self.dao.samsung.stockQuote.change = [quotesArray[3] objectForKey:@"Change"];
-        
-                
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.tableView reloadData];
         });

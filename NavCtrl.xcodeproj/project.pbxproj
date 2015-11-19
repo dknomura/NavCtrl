@@ -22,6 +22,8 @@
 		48A656E618163C1B00746D36 /* CompanyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A656E418163C1B00746D36 /* CompanyViewController.m */; };
 		48A656EB18163F8700746D36 /* ProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A656E918163F8700746D36 /* ProductViewController.m */; };
 		48A656EE1816468000746D36 /* Sunflower.gif in Resources */ = {isa = PBXBuildFile; fileRef = 48A656ED1816468000746D36 /* Sunflower.gif */; };
+		AAEB97B71BFDB10600FD273E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */; };
+		AAEB97BF1BFE56CD00FD273E /* sqllite in Resources */ = {isa = PBXBuildFile; fileRef = AAEB97BE1BFE56CD00FD273E /* sqllite */; };
 		AAEEE4871BF99DFC001533A8 /* Company.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4821BF99DFC001533A8 /* Company.m */; };
 		AAEEE4881BF99DFC001533A8 /* DAO.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4841BF99DFC001533A8 /* DAO.m */; };
 		AAEEE4891BF99DFC001533A8 /* Product.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4861BF99DFC001533A8 /* Product.m */; };
@@ -68,6 +70,8 @@
 		48A656E818163F8700746D36 /* ProductViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProductViewController.h; path = ../ProductViewController.h; sourceTree = "<group>"; };
 		48A656E918163F8700746D36 /* ProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProductViewController.m; path = ../ProductViewController.m; sourceTree = "<group>"; };
 		48A656ED1816468000746D36 /* Sunflower.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Sunflower.gif; sourceTree = "<group>"; };
+		AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
+		AAEB97BE1BFE56CD00FD273E /* sqllite */ = {isa = PBXFileReference; lastKnownFileType = file; path = sqllite; sourceTree = "<group>"; };
 		AAEEE4811BF99DFC001533A8 /* Company.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Company.h; sourceTree = SOURCE_ROOT; };
 		AAEEE4821BF99DFC001533A8 /* Company.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Company.m; sourceTree = SOURCE_ROOT; };
 		AAEEE4831BF99DFC001533A8 /* DAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAO.h; sourceTree = SOURCE_ROOT; };
@@ -93,6 +97,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AAEB97B71BFDB10600FD273E /* libsqlite3.tbd in Frameworks */,
 				AAEEE49D1BF99ED3001533A8 /* WebKit.framework in Frameworks */,
 				48A656B718163BF200746D36 /* CoreGraphics.framework in Frameworks */,
 				48A656B918163BF200746D36 /* UIKit.framework in Frameworks */,
@@ -162,6 +167,7 @@
 		48A656B318163BF200746D36 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */,
 				AAEEE49C1BF99ED3001533A8 /* WebKit.framework */,
 				48A656B418163BF200746D36 /* Foundation.framework */,
 				48A656B618163BF200746D36 /* CoreGraphics.framework */,
@@ -231,6 +237,7 @@
 				AAEEE4861BF99DFC001533A8 /* Product.m */,
 				AAEEE49E1BF9A4CD001533A8 /* StockQuote.h */,
 				AAEEE49F1BF9A4CD001533A8 /* StockQuote.m */,
+				AAEB97BE1BFE56CD00FD273E /* sqllite */,
 			);
 			name = DAO;
 			sourceTree = "<group>";
@@ -330,6 +337,7 @@
 				48A656BF18163BF200746D36 /* InfoPlist.strings in Resources */,
 				48A656C718163BF200746D36 /* Images.xcassets in Resources */,
 				AAEEE4941BF99E94001533A8 /* Windows icon.png in Resources */,
+				AAEB97BF1BFE56CD00FD273E /* sqllite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -9,6 +9,8 @@
 #import "ProductViewController.h"
 #import <WebKit/WebKit.h>
 #import "UpdateProductViewController.h"
+#import <sqlite3.h>
+
 
 
 @interface ProductViewController ()
@@ -154,7 +156,7 @@
         // Delete the row from the data source
         [self.currentCompany.products removeObjectAtIndex:indexPath.row];
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao saveFileWithCompanyList:self.dao.companyList];
+        [self.dao updateCompanyList];
 
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
@@ -164,7 +166,7 @@
         //        Product *newProduct = [product mutableCopy];
         [self.currentCompany.products insertObject:product atIndex:indexPath.row];
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao saveFileWithCompanyList:self.dao.companyList];
+        [self.dao updateCompanyList];
 
         [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
@@ -180,7 +182,7 @@
     Product *productToMove = self.currentCompany.products[fromIndexPath.row];
     [self.currentCompany.products removeObjectAtIndex:fromIndexPath.row];
     [self.currentCompany.products insertObject:productToMove atIndex:toIndexPath.row];
-    [self.dao saveFileWithCompanyList:self.dao.companyList];
+    [self.dao updateCompanyList];
 
 }
 

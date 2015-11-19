@@ -29,13 +29,7 @@
 //    
 //    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
 //    NSData *isData = [userDefaults objectForKey:@"SAVEDCompaniesList"];
-    NSData *isData = [dao.fileManager contentsAtPath:dao.filePathString];
-    
-    if (isData){
-        [dao loadFile];
-    } else {
-        [dao saveFileWithCompanyList:dao.companyList];
-    }
+
 //    [dao createCompaniesAndProducts];
     
     CompanyViewController *rootController =[[CompanyViewController alloc]initWithNibName:@"CompanyViewController" bundle:nil];

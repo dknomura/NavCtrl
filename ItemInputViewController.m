@@ -9,6 +9,8 @@
 #import "ItemInputViewController.h"
 #import "ProductViewController.h"
 #import "DAO.h"
+#import <sqlite3.h>
+
 
 @interface ItemInputViewController ()
 @property (retain, nonatomic) IBOutlet UITextField *companyTextField;
@@ -96,7 +98,7 @@
     self.currentCompany.name = self.companyTextField.text;
     
 //    [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-    [self.dao saveFileWithCompanyList:self.dao.companyList];
+    [self.dao updateCompanyList];
 
     
     self.companyTextField.text = nil;
