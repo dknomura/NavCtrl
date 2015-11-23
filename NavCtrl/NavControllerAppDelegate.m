@@ -24,7 +24,7 @@
     // Override point for customization after application launch.
     DAO *dao = [DAO sharedInstance];
     [dao createCompaniesAndProducts];
-    [dao createFileDirectory];
+    [dao initializeCoreData];
 
 //    
 //    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="8195" systemVersion="14F27" minimumToolsVersion="Xcode 7.0">
+    <entity name="CompanyMO" representedClassName="CompanyMO" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="stockQuote" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="products" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductMO" inverseName="whoSells" inverseEntity="ProductMO" syncable="YES"/>
+    </entity>
+    <entity name="ProductMO" representedClassName="ProductMO" syncable="YES">
+        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="website" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="whoSells" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CompanyMO" inverseName="products" inverseEntity="CompanyMO" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="CompanyMO" positionX="-200" positionY="26" width="128" height="88"/>
+        <element name="ProductMO" positionX="18" positionY="54" width="128" height="88"/>
+    </elements>
+</model>

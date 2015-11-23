@@ -11,7 +11,7 @@
 #import "Product.h"
 #import "StockQuote.h"
 #import <sqlite3.h>
-
+#import <CoreData/CoreData.h>
 
 @interface DAO : NSObject
 
@@ -21,6 +21,9 @@
 @property (nonatomic, strong) Company *samsung;
 @property (nonatomic, strong) Company *windows;
 @property (nonatomic, strong) Company *sony;
+
+@property (strong) NSManagedObjectContext *managedObjectContext;
+
 
 @property (nonatomic, strong) NSMutableArray *companyList;
 
@@ -35,7 +38,7 @@
 @property (nonatomic, strong) NSString *filePathString;
 
 
--(void) createFileDirectory;
+-(void) initializeCoreData;
 
 
 -(void) saveFileWithCompanyList: (NSMutableArray*) companyList;
@@ -48,34 +51,37 @@
 -(void) saveDefaultsWithCompanyList:(NSMutableArray*) companyList;
 
 
--(void) addProduct:(Product*)product forCurrentCompany: (Company*) company;
-
--(void) removeProduct:(Product*)product forCurrentCompany: (Company*) company;
-
--(void) addCompany: (Company*) company;
-
--(void) removeCompany: (Company*) company;
-
--(void) deleteCompanyFromDB:(Company *) company;
-
--(void) updateCompanyList;
--(void) loadCompanyList;
-
--(void) addCompanyToDB: (Company*) company;
-
--(void) databaseAddProduct:(Product*)product fromCompany:(Company*)company;
--(void) databaseDeleteProduct:(Product*) product fromCompany:(Company*) company;
-
-
-
--(void) updateProductsForCompany: (Company*) company toProducts:(NSMutableArray*) updatedProducts;
-
-
-
 
 -(void) createCompaniesAndProducts;
 
 +(instancetype) sharedInstance;
+
+//
+//
+//-(void) addProduct:(Product*)product forCurrentCompany: (Company*) company;
+//
+//-(void) removeProduct:(Product*)product forCurrentCompany: (Company*) company;
+//
+//-(void) addCompany: (Company*) company;
+//
+//-(void) removeCompany: (Company*) company;
+//
+//-(void) deleteCompanyFromDB:(Company *) company;
+//
+//-(void) updateCompanyList;
+//-(void) loadCompanyList;
+//
+//-(void) addCompanyToDB: (Company*) company;
+//
+//-(void) databaseAddProduct:(Product*)product fromCompany:(Company*)company;
+//-(void) databaseDeleteProduct:(Product*) product fromCompany:(Company*) company;
+//
+//
+//
+//-(void) updateProductsForCompany: (Company*) company toProducts:(NSMutableArray*) updatedProducts;
+
+
+
 
 
 

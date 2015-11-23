@@ -22,6 +22,11 @@
 		48A656E618163C1B00746D36 /* CompanyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A656E418163C1B00746D36 /* CompanyViewController.m */; };
 		48A656EB18163F8700746D36 /* ProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A656E918163F8700746D36 /* ProductViewController.m */; };
 		48A656EE1816468000746D36 /* Sunflower.gif in Resources */ = {isa = PBXBuildFile; fileRef = 48A656ED1816468000746D36 /* Sunflower.gif */; };
+		9CC572521BFFAF4000D51122 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572501BFFAF4000D51122 /* Model.xcdatamodeld */; settings = {ASSET_TAGS = (); }; };
+		9CC572671BFFB14500D51122 /* ProductMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572601BFFB14500D51122 /* ProductMO+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
+		9CC572681BFFB14500D51122 /* ProductMO.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572621BFFB14500D51122 /* ProductMO.m */; settings = {ASSET_TAGS = (); }; };
+		9CC572691BFFB14500D51122 /* CompanyMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572641BFFB14500D51122 /* CompanyMO+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
+		9CC5726A1BFFB14500D51122 /* CompanyMO.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572661BFFB14500D51122 /* CompanyMO.m */; settings = {ASSET_TAGS = (); }; };
 		AAEB97B71BFDB10600FD273E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */; };
 		AAEB97BF1BFE56CD00FD273E /* sqllite in Resources */ = {isa = PBXBuildFile; fileRef = AAEB97BE1BFE56CD00FD273E /* sqllite */; };
 		AAEEE4871BF99DFC001533A8 /* Company.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4821BF99DFC001533A8 /* Company.m */; };
@@ -70,6 +75,15 @@
 		48A656E818163F8700746D36 /* ProductViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProductViewController.h; path = ../ProductViewController.h; sourceTree = "<group>"; };
 		48A656E918163F8700746D36 /* ProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProductViewController.m; path = ../ProductViewController.m; sourceTree = "<group>"; };
 		48A656ED1816468000746D36 /* Sunflower.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Sunflower.gif; sourceTree = "<group>"; };
+		9CC572511BFFAF4000D51122 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
+		9CC5725F1BFFB14500D51122 /* ProductMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ProductMO+CoreDataProperties.h"; sourceTree = "<group>"; };
+		9CC572601BFFB14500D51122 /* ProductMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ProductMO+CoreDataProperties.m"; sourceTree = "<group>"; };
+		9CC572611BFFB14500D51122 /* ProductMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductMO.h; sourceTree = "<group>"; };
+		9CC572621BFFB14500D51122 /* ProductMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductMO.m; sourceTree = "<group>"; };
+		9CC572631BFFB14500D51122 /* CompanyMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CompanyMO+CoreDataProperties.h"; sourceTree = "<group>"; };
+		9CC572641BFFB14500D51122 /* CompanyMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CompanyMO+CoreDataProperties.m"; sourceTree = "<group>"; };
+		9CC572651BFFB14500D51122 /* CompanyMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompanyMO.h; sourceTree = "<group>"; };
+		9CC572661BFFB14500D51122 /* CompanyMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompanyMO.m; sourceTree = "<group>"; };
 		AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		AAEB97BE1BFE56CD00FD273E /* sqllite */ = {isa = PBXFileReference; lastKnownFileType = file; path = sqllite; sourceTree = "<group>"; };
 		AAEEE4811BF99DFC001533A8 /* Company.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Company.h; sourceTree = SOURCE_ROOT; };
@@ -226,6 +240,22 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		9CC5726B1BFFB24100D51122 /* ManagedObjects */ = {
+			isa = PBXGroup;
+			children = (
+				9CC5725F1BFFB14500D51122 /* ProductMO+CoreDataProperties.h */,
+				9CC572601BFFB14500D51122 /* ProductMO+CoreDataProperties.m */,
+				9CC572611BFFB14500D51122 /* ProductMO.h */,
+				9CC572621BFFB14500D51122 /* ProductMO.m */,
+				9CC572631BFFB14500D51122 /* CompanyMO+CoreDataProperties.h */,
+				9CC572641BFFB14500D51122 /* CompanyMO+CoreDataProperties.m */,
+				9CC572651BFFB14500D51122 /* CompanyMO.h */,
+				9CC572661BFFB14500D51122 /* CompanyMO.m */,
+			);
+			name = ManagedObjects;
+			path = ..;
+			sourceTree = "<group>";
+		};
 		AAEEE48C1BF99E24001533A8 /* DAO */ = {
 			isa = PBXGroup;
 			children = (
@@ -235,8 +265,10 @@
 				AAEEE4841BF99DFC001533A8 /* DAO.m */,
 				AAEEE4851BF99DFC001533A8 /* Product.h */,
 				AAEEE4861BF99DFC001533A8 /* Product.m */,
+				9CC572501BFFAF4000D51122 /* Model.xcdatamodeld */,
 				AAEEE49E1BF9A4CD001533A8 /* StockQuote.h */,
 				AAEEE49F1BF9A4CD001533A8 /* StockQuote.m */,
+				9CC5726B1BFFB24100D51122 /* ManagedObjects */,
 				AAEB97BE1BFE56CD00FD273E /* sqllite */,
 			);
 			name = DAO;
@@ -365,6 +397,11 @@
 				AAEEE4871BF99DFC001533A8 /* Company.m in Sources */,
 				48A656C518163BF200746D36 /* NavControllerAppDelegate.m in Sources */,
 				48A656C118163BF200746D36 /* main.m in Sources */,
+				9CC5726A1BFFB14500D51122 /* CompanyMO.m in Sources */,
+				9CC572691BFFB14500D51122 /* CompanyMO+CoreDataProperties.m in Sources */,
+				9CC572681BFFB14500D51122 /* ProductMO.m in Sources */,
+				9CC572671BFFB14500D51122 /* ProductMO+CoreDataProperties.m in Sources */,
+				9CC572521BFFAF4000D51122 /* Model.xcdatamodeld in Sources */,
 				48A656EB18163F8700746D36 /* ProductViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -583,6 +620,19 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCVersionGroup section */
+		9CC572501BFFAF4000D51122 /* Model.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				9CC572511BFFAF4000D51122 /* Model.xcdatamodel */,
+			);
+			currentVersion = 9CC572511BFFAF4000D51122 /* Model.xcdatamodel */;
+			path = Model.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 48A656A918163BF200746D36 /* Project object */;
 }
