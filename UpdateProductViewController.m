@@ -57,7 +57,7 @@
     self.currentProduct.website = self.websiteTextField.text;
     
 //    [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-    [self.dao updateCompanyList];
+    [self.dao updateCurrentProduct:self.currentProduct forCurrentCompany:self.currentCompany];
 
     
     [self.navigationController popViewControllerAnimated:YES];

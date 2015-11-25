@@ -118,13 +118,13 @@
     Company *currentCompany = [self.dao.companyList objectAtIndex:[indexPath row]];
     
     cell.textLabel.text = currentCompany.name;
-    if (currentCompany.stockQuote.quote){
-     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@, %@", currentCompany.stockQuote.quote, currentCompany.stockQuote.change];
+    if (currentCompany.stockQuote){
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@: %@, %@", currentCompany.symbol, currentCompany.stockQuote, currentCompany.change];
     }else {
         cell.detailTextLabel.text = @"No stock information available";
     }
     cell.imageView.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@ icon.png", currentCompany.name]];
-    
+
     return cell;
 }
 
@@ -152,19 +152,21 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self.dao.companyList removeObjectAtIndex:indexPath.row];
-        [self.dao updateCompanyList];
+        Company *companyToRemove = [self.dao.companyList objectAtIndex:indexPath.row];
+        [self.dao deleteCompany:companyToRemove];
+     //   [self.dao updateCompanyList];
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
 
         
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        Company *company = [[Company alloc]init];
-        company.name = @"New Company";
+        Company *companyToAdd = [[Company alloc]init];
+        companyToAdd.name = @"NewCompany";
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao.companyList insertObject:company atIndex:indexPath.row];
-        [self.dao updateCompanyList];
+        [self.dao addCompany:companyToAdd];
+
+        //      [self.dao updateCompanyList];
         [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
     }
 }
@@ -173,11 +175,10 @@
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    
     Company *companyToMove = self.dao.companyList [fromIndexPath.row];
     [self.dao.companyList removeObjectAtIndex:fromIndexPath.row];
     [self.dao.companyList insertObject:companyToMove atIndex:toIndexPath.row];
-    [self.dao updateCompanyList];
+    [self.dao updateCompanyIndices];
 }
 
 
@@ -196,15 +197,14 @@
 // In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *pvcTitle = [[self.dao.companyList objectAtIndex:indexPath.row] name];
+    Company *currentCompany = [self.dao.companyList objectAtIndex:indexPath.row];
     
-    self.productViewController.title = pvcTitle;
+    self.productViewController.title = currentCompany.name;
+    self.productViewController.currentCompany = currentCompany;
     
     [self.navigationController
      pushViewController:self.productViewController
-     animated:YES];
-    
-    
+     animated:YES];    
 }
 
 #pragma mark - addButton Methods
@@ -227,8 +227,27 @@
 
 -(void) setStockQuotes
 {
+    NSMutableString *stockSymbolInURL = [NSMutableString new];
+    for (int i = 0; i < [self.dao.companyList count]; i++){
+        [stockSymbolInURL appendString: @"%22"];
+        if ([self.dao.companyList[i] symbol]){
+            [stockSymbolInURL appendString:[NSString stringWithFormat:@"%@", [self.dao.companyList[i] symbol]]];
+        } else {
+            [stockSymbolInURL appendString:[NSString stringWithFormat:@"%@", [self.dao.companyList[i] name]]];
+        }
+        if (i == [self.dao.companyList count] - 1){
+            [stockSymbolInURL appendString:@"%22"];
+        } else {
+            [stockSymbolInURL appendString:@"%22%2C"];
+        }
+    }
     
-    NSURL *url = [NSURL URLWithString:@"https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22aapl%22%2C%22msft%22%2C%22sne%22%2C%22SSNLF%22)&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback="];
+    
+    NSMutableString *urlString = [NSMutableString stringWithString:@"https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("];
+    [urlString appendString:stockSymbolInURL];
+    [urlString appendString:@")&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback="];
+    
+    NSURL *url = [NSURL URLWithString:urlString];
     
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
     
@@ -247,14 +266,12 @@
         NSDictionary *resultsDictionary = [[jsonDictionary objectForKey:@"query"] objectForKey:@"results"];
         NSArray *quotesArray = [resultsDictionary objectForKey:@"quote"];
         
-        NSUInteger companyCount = [self.dao.companyList count];
-        int t= (companyCount < 4) ? companyCount : 4;
-        for (int i = 0; i<t; i++){
+
+        for (int i = 0; i< [self.dao.companyList count]; i++){
             Company *company = self.dao.companyList[i];
-            company.stockQuote = [[StockQuote alloc] init];
-            company.stockQuote.symbol = [quotesArray[i] objectForKey:@"symbol"];
-            company.stockQuote.quote = [quotesArray[i] objectForKey:@"LastTradePriceOnly"];
-            company.stockQuote.change = [quotesArray[i] objectForKey:@"Change"];
+            company.symbol = [quotesArray[i] objectForKey:@"symbol"];
+            company.stockQuote = [quotesArray[i] objectForKey:@"LastTradePriceOnly"];
+            company.change = [quotesArray[i] objectForKey:@"Change"];
         }
 
         

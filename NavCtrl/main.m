@@ -14,8 +14,7 @@
 int main(int argc, char * argv[])
 {
     @autoreleasepool {
-        DAO *dao = [DAO sharedInstance];
-        [dao createCompaniesAndProducts];
+
         return UIApplicationMain(argc, argv, nil, NSStringFromClass([NavControllerAppDelegate class]));
     }
 }

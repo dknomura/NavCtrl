@@ -11,4 +11,5 @@
 @interface Product : NSObject <NSCoding>
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *website;
+@property (strong, nonatomic) NSNumber *index;
 @end

@@ -22,11 +22,11 @@
 		48A656E618163C1B00746D36 /* CompanyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A656E418163C1B00746D36 /* CompanyViewController.m */; };
 		48A656EB18163F8700746D36 /* ProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A656E918163F8700746D36 /* ProductViewController.m */; };
 		48A656EE1816468000746D36 /* Sunflower.gif in Resources */ = {isa = PBXBuildFile; fileRef = 48A656ED1816468000746D36 /* Sunflower.gif */; };
-		9CC572521BFFAF4000D51122 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572501BFFAF4000D51122 /* Model.xcdatamodeld */; settings = {ASSET_TAGS = (); }; };
-		9CC572671BFFB14500D51122 /* ProductMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572601BFFB14500D51122 /* ProductMO+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
-		9CC572681BFFB14500D51122 /* ProductMO.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572621BFFB14500D51122 /* ProductMO.m */; settings = {ASSET_TAGS = (); }; };
-		9CC572691BFFB14500D51122 /* CompanyMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572641BFFB14500D51122 /* CompanyMO+CoreDataProperties.m */; settings = {ASSET_TAGS = (); }; };
-		9CC5726A1BFFB14500D51122 /* CompanyMO.m in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572661BFFB14500D51122 /* CompanyMO.m */; settings = {ASSET_TAGS = (); }; };
+		9CC572521BFFAF4000D51122 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572501BFFAF4000D51122 /* Model.xcdatamodeld */; };
+		AA30B09F1C056D9D00FB270C /* ProductMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = AA30B09C1C056D9D00FB270C /* ProductMO+CoreDataProperties.m */; };
+		AA30B0A01C056D9D00FB270C /* CompanyMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = AA30B09E1C056D9D00FB270C /* CompanyMO+CoreDataProperties.m */; };
+		AAE83E681C03CF4900487400 /* ProductMO.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE83E621C03CF4900487400 /* ProductMO.m */; };
+		AAE83E6A1C03CF4900487400 /* CompanyMO.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE83E661C03CF4900487400 /* CompanyMO.m */; };
 		AAEB97B71BFDB10600FD273E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */; };
 		AAEB97BF1BFE56CD00FD273E /* sqllite in Resources */ = {isa = PBXBuildFile; fileRef = AAEB97BE1BFE56CD00FD273E /* sqllite */; };
 		AAEEE4871BF99DFC001533A8 /* Company.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4821BF99DFC001533A8 /* Company.m */; };
@@ -76,14 +76,14 @@
 		48A656E918163F8700746D36 /* ProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProductViewController.m; path = ../ProductViewController.m; sourceTree = "<group>"; };
 		48A656ED1816468000746D36 /* Sunflower.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Sunflower.gif; sourceTree = "<group>"; };
 		9CC572511BFFAF4000D51122 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
-		9CC5725F1BFFB14500D51122 /* ProductMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ProductMO+CoreDataProperties.h"; sourceTree = "<group>"; };
-		9CC572601BFFB14500D51122 /* ProductMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ProductMO+CoreDataProperties.m"; sourceTree = "<group>"; };
-		9CC572611BFFB14500D51122 /* ProductMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductMO.h; sourceTree = "<group>"; };
-		9CC572621BFFB14500D51122 /* ProductMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductMO.m; sourceTree = "<group>"; };
-		9CC572631BFFB14500D51122 /* CompanyMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CompanyMO+CoreDataProperties.h"; sourceTree = "<group>"; };
-		9CC572641BFFB14500D51122 /* CompanyMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CompanyMO+CoreDataProperties.m"; sourceTree = "<group>"; };
-		9CC572651BFFB14500D51122 /* CompanyMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompanyMO.h; sourceTree = "<group>"; };
-		9CC572661BFFB14500D51122 /* CompanyMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompanyMO.m; sourceTree = "<group>"; };
+		AA30B09B1C056D9D00FB270C /* ProductMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ProductMO+CoreDataProperties.h"; sourceTree = "<group>"; };
+		AA30B09C1C056D9D00FB270C /* ProductMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ProductMO+CoreDataProperties.m"; sourceTree = "<group>"; };
+		AA30B09D1C056D9D00FB270C /* CompanyMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CompanyMO+CoreDataProperties.h"; sourceTree = "<group>"; };
+		AA30B09E1C056D9D00FB270C /* CompanyMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CompanyMO+CoreDataProperties.m"; sourceTree = "<group>"; };
+		AAE83E611C03CF4900487400 /* ProductMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductMO.h; sourceTree = "<group>"; };
+		AAE83E621C03CF4900487400 /* ProductMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductMO.m; sourceTree = "<group>"; };
+		AAE83E651C03CF4900487400 /* CompanyMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompanyMO.h; sourceTree = "<group>"; };
+		AAE83E661C03CF4900487400 /* CompanyMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CompanyMO.m; sourceTree = "<group>"; };
 		AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 		AAEB97BE1BFE56CD00FD273E /* sqllite */ = {isa = PBXFileReference; lastKnownFileType = file; path = sqllite; sourceTree = "<group>"; };
 		AAEEE4811BF99DFC001533A8 /* Company.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Company.h; sourceTree = SOURCE_ROOT; };
@@ -243,14 +243,14 @@
 		9CC5726B1BFFB24100D51122 /* ManagedObjects */ = {
 			isa = PBXGroup;
 			children = (
-				9CC5725F1BFFB14500D51122 /* ProductMO+CoreDataProperties.h */,
-				9CC572601BFFB14500D51122 /* ProductMO+CoreDataProperties.m */,
-				9CC572611BFFB14500D51122 /* ProductMO.h */,
-				9CC572621BFFB14500D51122 /* ProductMO.m */,
-				9CC572631BFFB14500D51122 /* CompanyMO+CoreDataProperties.h */,
-				9CC572641BFFB14500D51122 /* CompanyMO+CoreDataProperties.m */,
-				9CC572651BFFB14500D51122 /* CompanyMO.h */,
-				9CC572661BFFB14500D51122 /* CompanyMO.m */,
+				AAE83E611C03CF4900487400 /* ProductMO.h */,
+				AAE83E621C03CF4900487400 /* ProductMO.m */,
+				AA30B09B1C056D9D00FB270C /* ProductMO+CoreDataProperties.h */,
+				AA30B09C1C056D9D00FB270C /* ProductMO+CoreDataProperties.m */,
+				AA30B09D1C056D9D00FB270C /* CompanyMO+CoreDataProperties.h */,
+				AA30B09E1C056D9D00FB270C /* CompanyMO+CoreDataProperties.m */,
+				AAE83E651C03CF4900487400 /* CompanyMO.h */,
+				AAE83E661C03CF4900487400 /* CompanyMO.m */,
 			);
 			name = ManagedObjects;
 			path = ..;
@@ -389,18 +389,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAEEE4891BF99DFC001533A8 /* Product.m in Sources */,
+				AA30B09F1C056D9D00FB270C /* ProductMO+CoreDataProperties.m in Sources */,
 				AAEEE4A01BF9A4CD001533A8 /* StockQuote.m in Sources */,
 				AAEEE49A1BF99EA8001533A8 /* UpdateProductViewController.m in Sources */,
 				AAEEE4881BF99DFC001533A8 /* DAO.m in Sources */,
 				AAEEE4991BF99EA8001533A8 /* ItemInputViewController.m in Sources */,
+				AA30B0A01C056D9D00FB270C /* CompanyMO+CoreDataProperties.m in Sources */,
 				48A656E618163C1B00746D36 /* CompanyViewController.m in Sources */,
 				AAEEE4871BF99DFC001533A8 /* Company.m in Sources */,
 				48A656C518163BF200746D36 /* NavControllerAppDelegate.m in Sources */,
 				48A656C118163BF200746D36 /* main.m in Sources */,
-				9CC5726A1BFFB14500D51122 /* CompanyMO.m in Sources */,
-				9CC572691BFFB14500D51122 /* CompanyMO+CoreDataProperties.m in Sources */,
-				9CC572681BFFB14500D51122 /* ProductMO.m in Sources */,
-				9CC572671BFFB14500D51122 /* ProductMO+CoreDataProperties.m in Sources */,
+				AAE83E6A1C03CF4900487400 /* CompanyMO.m in Sources */,
+				AAE83E681C03CF4900487400 /* ProductMO.m in Sources */,
 				9CC572521BFFAF4000D51122 /* Model.xcdatamodeld in Sources */,
 				48A656EB18163F8700746D36 /* ProductViewController.m in Sources */,
 			);

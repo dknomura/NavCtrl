@@ -20,6 +20,7 @@
 @property (retain, nonatomic) IBOutlet UITextField *websiteTextField2;
 @property (retain, nonatomic) IBOutlet UITextField *websiteTextField3;
 @property (retain, nonatomic) IBOutlet UITextField *productTextField3;
+@property (retain, nonatomic) IBOutlet UITextField *symbolTextField;
 @property (strong, nonatomic) DAO *dao;
 
 @end
@@ -45,29 +46,44 @@
 -(void) viewWillAppear:(BOOL)animated
 {
     self.companyTextField.text = self.currentCompany.name;
+    if (![self.currentCompany.name isEqualToString:self.currentCompany.symbol]){
+        self.symbolTextField.text = self.currentCompany.symbol;
+    }
     
     NSInteger numberOfProducts = [self.currentCompany.products count];
     
     if (numberOfProducts > 0){
         self.productTextField1.text = [self.currentCompany.products [0] name];
+    } else{
+        self.productTextField1.text = nil;
     }
     if (numberOfProducts > 1) {
         self.productTextField2.text = [self.currentCompany.products [1] name];
+    }else{
+        self.productTextField2.text = nil;
     }
     if (numberOfProducts > 2){
         self.productTextField3.text = [self.currentCompany.products [2] name];
+    }else{
+        self.productTextField3.text = nil;
     }
     if (numberOfProducts > 0){
         self.websiteTextField1.text = [self.currentCompany.products [0] website];
+    }else{
+        self.websiteTextField1.text = nil;
     }
     
     if (numberOfProducts > 1){
         self.websiteTextField2.text = [self.currentCompany.products [1] website];
 
+    }else{
+        self.websiteTextField2.text = nil;
     }
     if (numberOfProducts > 2) {
         self.websiteTextField3.text = [self.currentCompany.products [2] website];
 
+    }else{
+        self.websiteTextField3.text = nil;
     }
 
     
@@ -96,12 +112,15 @@
     
     
     self.currentCompany.name = self.companyTextField.text;
+    self.currentCompany.symbol = self.symbolTextField.text;
     
 //    [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-    [self.dao updateCompanyList];
+    [self.dao updateCurrentCompany:self.currentCompany];
 
     
     self.companyTextField.text = nil;
+    self.symbolTextField.text = nil;
+    
     self.productTextField1.text = nil;
     self.productTextField2.text = nil;
     self.productTextField3.text = nil;
@@ -134,6 +153,7 @@
     [_websiteTextField2 release];
     [_websiteTextField3 release];
     [_productTextField3 release];
+    [_symbolTextField release];
     [super dealloc];
 }
 @end

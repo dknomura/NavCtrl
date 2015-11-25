@@ -11,8 +11,12 @@
 
 @interface Company : NSObject <NSCoding>
 @property (strong, nonatomic) NSString *name;
+@property (strong, nonatomic) NSString *symbol;
+@property (strong, nonatomic) NSString *stockQuote;
+@property (nonatomic, strong) NSString *change;
+
 @property (strong, nonatomic) NSMutableArray *products;
-@property (strong, nonatomic) StockQuote *stockQuote;
+@property (strong, nonatomic) NSNumber *index;
 
 
 @end

@@ -2,12 +2,14 @@
 //  ProductMO.h
 //  NavCtrl
 //
-//  Created by Daniel Nomura on 11/20/15.
+//  Created by Aditya Narayan on 11/23/15.
 //  Copyright © 2015 Aditya Narayan. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
+
+@class CompanyMO;
 
 NS_ASSUME_NONNULL_BEGIN
 

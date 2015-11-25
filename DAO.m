@@ -10,11 +10,7 @@
 #import <sqlite3.h>
 
 @interface DAO()
-//{
-//    sqlite3 *companyDB;
-//}
-@property sqlite3 *companyDB;
-@property sqlite3 *productDB;
+@property (strong, nonatomic) NSFetchedResultsController *companyFetchedResultsController;
 
 @end
 
@@ -42,172 +38,298 @@
 
 -(void) initializeCoreData
 {
+
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
     NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     NSAssert(mom != nil, @"Error initializing ManagedObjectModel");
     NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
-    NSManagedObjectContext *moc = [[NSManagedObjectContext alloc]initWithConcurrencyType:NSMainQueueConcurrencyType];
-    [moc setPersistentStoreCoordinator:psc];
-    self.managedObjectContext = moc;
+    self.managedObjectContext= [[NSManagedObjectContext alloc]initWithConcurrencyType:NSMainQueueConcurrencyType];
+    [self.managedObjectContext setPersistentStoreCoordinator:psc];
+    
     
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSURL *documentsURL = [fileManager URLForDirectory:NSDocumentDirectory inDomain:NSUserDomainMask appropriateForURL:NULL create:true error:&error];
     NSURL *storeURL = [documentsURL URLByAppendingPathComponent:@"Model.sqlite"];
     
+    
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSError *error;
-        NSPersistentStoreCoordinator *psc = [[self managedObjectContext] persistentStoreCoordinator];
+//        NSPersistentStoreCoordinator *psc = [self.managedObjectContext persistentStoreCoordinator];
         NSPersistentStore *store = [psc addPersistentStoreWithType:NSSQLiteStoreType configuration:nil URL:storeURL options:nil error:&error];
         NSAssert(store != nil, @"Error initializing PSC: %@, %@", error.localizedDescription, error.userInfo);
-        
     });
-}
-
-
-
--(void) loadCompanyList
-{
-    sqlite3_stmt *statement;
-    if(sqlite3_open([self.filePathString UTF8String], &_companyDB)== SQLITE_OK){
-        NSMutableArray *updatedCompanyList = [NSMutableArray new];
-        const char *query_sql = [[NSString stringWithFormat: @"SELECT name, id FROM company"] UTF8String];;
-        const char *unusedTail;
-        if (sqlite3_prepare_v2(_companyDB, query_sql, 999, &statement, &unusedTail) == SQLITE_OK){
-            while (sqlite3_step(statement) == SQLITE_ROW){
-                NSString *name = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 0)];
-                NSString *companyID = [[NSString alloc] initWithUTF8String:(const char *)sqlite3_column_text(statement, 1)];
-                Company *company = [[Company alloc] init];
-                company.name = name;
-                company.products = [self makeProductsArrayWithCompanyName:companyID];
-                [updatedCompanyList addObject:company];
-                
-            }
-        } else {
-            NSLog(@"%s", sqlite3_errmsg(_companyDB));
-
-        }
-        self.companyList = updatedCompanyList;
-    }
-    //    NSData *encodedData = [NSKeyedArchiver archivedDataWithRootObject: self.companyList];
-    //
-    //    [encodedData writeToFile:self.filePathString atomically:false];
-}
-
-
-
-
--(void)updateCompanyList
-{
-    char *error;
-    if(sqlite3_open([self.filePathString UTF8String], &_companyDB)== SQLITE_OK){
-        const char *clearCompany_sql = [[NSString stringWithFormat: @"DELETE FROM company"] UTF8String];
-        if (sqlite3_exec(_companyDB, clearCompany_sql, NULL, NULL, &error)==SQLITE_OK){
-            
-            NSLog(@"Company Table cleared");
-            
-            const char *clearProduct_sql = [[NSString stringWithFormat: @"DELETE FROM product"] UTF8String];
-            if (sqlite3_exec(_companyDB, clearProduct_sql, NULL, NULL, &error)==SQLITE_OK){
-                NSLog(@"Product Table cleared");
-                
-                
-                for (int i = 0; i<[self.companyList count]; i++) {
-                    Company *currentCompany = self.companyList[i];
-                    const char* insertCompany = [[NSString stringWithFormat:@"INSERT INTO company (id, name) VALUES ('%d', '%@')", i, currentCompany.name] UTF8String];
-                    if (sqlite3_exec(_companyDB, insertCompany, NULL, NULL, &error)==SQLITE_OK){
-                        NSLog(@"%@ inserted into company table", currentCompany.name);
-                        
-                        
-                        
-                        for (int j = 0; j< [currentCompany.products count]; j++){
-                            Product *currentProduct = currentCompany.products[j];
-                            const char *insertProduct = [[NSString stringWithFormat:@"INSERT INTO product (company_id, name, website) VALUES('%d', '%@', '%@')", i, currentProduct.name, currentProduct.website] UTF8String];
-                            if (sqlite3_exec(_companyDB, insertProduct, NULL, NULL, &error)==SQLITE_OK){
-                                NSLog(@"%@ inserted into product table for company: %@", currentProduct.name, currentCompany.name);
-                            } else {
-                                NSLog(@"%s", error);
-                            }
-                        }
-                        
-                    } else {
-                        NSLog(@"%s", error);
-                    }
-                }
-            }else {
-                NSLog(@"%s", error);
-            }
-        } else {
-            NSLog(@"%s", error);
-        }
+    
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
+    NSSortDescriptor *sortDescriptor = [NSSortDescriptor sortDescriptorWithKey:@"name" ascending:true];
+    [request setSortDescriptors:@[sortDescriptor]];
+    self.companyFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:request managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    
+    if (![self.companyFetchedResultsController performFetch:&error]){
+        NSLog(@"Failed to initialize FetchedResults Controller: %@, %@", error.localizedDescription, error.userInfo);
+        abort();
     }
     
-}
+    NSArray *results = self.companyFetchedResultsController.fetchedObjects;
+//    
+//    [self clearManagedObjectContext];
+//    
+//    [self createCompaniesAndProducts];
 
-
-
-
--(NSMutableArray*) makeProductsArrayWithCompanyName:(NSString*) name
-{
-    NSMutableArray *productArray = [NSMutableArray new];
-    const char *productQuery = [[NSString stringWithFormat:@"SELECT name, website FROM product WHERE company_id = %@", name] UTF8String];
-    sqlite3_stmt *productStatement;
-    const char *unusedTail;
-    if (sqlite3_open([self.filePathString UTF8String], &_productDB )== SQLITE_OK){
-        if (sqlite3_prepare_v2(_productDB, productQuery, -1, &productStatement, &unusedTail) == SQLITE_OK){
-            while (sqlite3_step(productStatement) ==SQLITE_ROW){
-                NSString *name = [[NSString alloc] initWithUTF8String:(const char*) sqlite3_column_text(productStatement, 0)];
-                NSString *website = [[NSString alloc] initWithUTF8String:(const char*) sqlite3_column_text(productStatement, 1)];
-                
-                Product *product = [[Product alloc] init];
-                product.name = name;
-                product.website = website;
-                
-                [productArray addObject:product];
-            }
-            
-        } else{
-            NSLog(@"%s", sqlite3_errmsg(_productDB));
-        }
-    } else{
-        NSLog(@"%s", sqlite3_errmsg(_productDB));
+    if ([results count] == 0){
+        [self createCompaniesAndProducts];
+    } else {
+        [self loadCompanyListFromFetchedResults:results];
+        
     }
-    return productArray;
 }
 
+
+-(void) loadCompanyListFromFetchedResults:(NSArray*)results
+{
+    self.companyList = [NSMutableArray new];
+    for (int i = 0; i < [results count]; i++){
+        [self.companyList addObject:[NSNumber numberWithInt:i]];
+    }
+    
+    
+    for(CompanyMO* companyMO in results){
+        Company *company = [[Company alloc] init];
+        company.name = companyMO.name;
+        company.stockQuote = companyMO.stockQuote;
+        company.index = companyMO.index;
+        company.symbol = companyMO.symbol;
+        company.products = [NSMutableArray new];
+        for(Product* productMO in companyMO.products){
+            Product *product = [[Product alloc] init];
+            product.index = productMO.index;
+            product.name = productMO.name;
+            product.website = productMO.website;
+            [company.products addObject:product];
+        }
+        [self.companyList replaceObjectAtIndex:[company.index intValue] withObject:company];
+    }
+}
+
+
+-(void) clearManagedObjectContext
+{
+    NSFetchRequest *companyRequest = [[[NSFetchRequest alloc] init] autorelease];
+    [companyRequest setEntity:[NSEntityDescription entityForName:@"CompanyMO" inManagedObjectContext:self.managedObjectContext]];
+    NSArray *companyMOList = [self.managedObjectContext executeFetchRequest:companyRequest error:nil];
+    for (CompanyMO *companyMO in companyMOList){
+        [self.managedObjectContext deleteObject:companyMO];
+    }
+    [self saveChanges];
+}
+
+-(void) saveChanges
+{
+    NSError *error;
+    BOOL saveSuccess = [self.managedObjectContext save:&error];
+    if (saveSuccess){
+        NSLog(@"Data Saved");
+    }else{
+        NSLog(@"%@", error.localizedDescription);
+    }
+}
+
+
+//-(NSArray*)updatedCompanyMOList
+//{
+//    NSFetchRequest *companyFetch = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
+//    NSError *error = nil;
+//    NSArray *companyMOList = [self.managedObjectContext executeFetchRequest:companyFetch error:&error];
+//    if (error){
+//        NSLog(@"Error fetching CompanyList: %@, %@", error.localizedDescription, error.userInfo);
+//        abort();
+//    }
+//    return companyMOList;
+//}
+
+-(void) addCompany:(Company*)company
+{
+    CompanyMO *newCompanyMO = [NSEntityDescription insertNewObjectForEntityForName:@"CompanyMO" inManagedObjectContext:self.managedObjectContext];
+    
+    newCompanyMO.name = company.name;
+    [self.companyList addObject:company];
+    [self updateCompanyIndices];
+}
+
+
+
+-(void) deleteCompany:(Company *)company
+{
+    [self.companyFetchedResultsController performFetch:nil];
+    
+    for(CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
+        if([company.name isEqualToString:companyMO.name]){
+            [self.managedObjectContext deleteObject:companyMO];
+            break;
+        }
+    }
+    [self.companyList removeObject:company];
+    [self updateCompanyIndices];
+}
+
+-(void) addProduct:(Product *)product forCompany:(Company *)company
+{
+    [self.companyFetchedResultsController performFetch:nil];
+
+    for (CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
+        if ([companyMO.name isEqualToString:company.name]){
+            ProductMO *newProductMO = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+            newProductMO.name = product.name;
+            newProductMO.website = product.website;
+            newProductMO.whoSells = companyMO;
+            break;
+        }
+    }
+    [company.products addObject:product];
+    [self updateProductIndicesForCurrentCompany:company];
+}
+
+-(void)deleteProduct:(Product *)product forCompany:(Company *)company
+{
+    [self.companyFetchedResultsController performFetch:nil];
+
+    for(CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
+        if([companyMO.name isEqualToString:company.name]){
+            for (ProductMO *productMO in companyMO.products) {
+                if([product.name isEqualToString:productMO.name]){
+                    [self.managedObjectContext deleteObject:productMO];
+                }
+            }
+        }
+    }
+    [company.products removeObject:product];
+    [self updateProductIndicesForCurrentCompany:company];
+}
+
+-(void) updateCurrentCompany:(Company *)company
+{
+    [self.companyFetchedResultsController performFetch:nil];
+
+    for (CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
+        if ([company.index isEqualToNumber:companyMO.index]){
+            companyMO.name = company.name;
+            companyMO.symbol = company.symbol;
+            for (int i = 0; i < [company.products count]; i++){
+                Product *updatingProduct = company.products[i];
+                ProductMO *MOproductToUpdate;
+                
+                if([companyMO.products count] <= i){
+                    MOproductToUpdate = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+
+                } else {
+                    MOproductToUpdate = [[companyMO.products allObjects] objectAtIndex:i];
+                }
+                MOproductToUpdate.name = updatingProduct.name;
+                MOproductToUpdate.website = updatingProduct.website;
+                MOproductToUpdate.whoSells = companyMO;
+                }
+            }
+        }
+    [self updateProductIndicesForCurrentCompany:company];
+}
+
+-(void)updateCurrentProduct:(Product *)product forCurrentCompany:(Company*)company
+{
+//    NSError *error;
+//    [self.companyFetchedResultsController performFetch:&error];
+//    if (error) {
+//        NSLog(@"Error performing fetch: %@, %@", error.localizedDescription, error.userInfo);
+//        abort();
+//    }
+//
+    [self.companyFetchedResultsController performFetch:nil];
+
+    for(CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
+        if ([companyMO.name isEqualToString:company.name]){
+            for (ProductMO *productMO in companyMO.products){
+                if ([product.index isEqualToNumber:productMO.index]){
+                    productMO.website = product.website;
+                    productMO.name = product.name;
+                }
+            }
+        }
+    }
+}
+
+-(void) updateCompanyIndices
+{
+    [self.companyFetchedResultsController performFetch:nil];
+
+    for (Company *company in self.companyList){
+        company.index = [NSNumber numberWithLong:[self.companyList indexOfObject:company]];
+        for (CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
+            if ([company.name isEqualToString:companyMO.name]){
+                companyMO.index = company.index;
+                break;
+            }
+        }
+    }
+    [self saveChanges];
+}
+
+-(void) updateProductIndicesForCurrentCompany:(Company*)currentCompany
+{
+    [self.companyFetchedResultsController performFetch:nil];
+
+    for (CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects) {
+        if([companyMO.name isEqualToString:currentCompany.name]){
+            for (Product *product in currentCompany.products){
+                product.index = [NSNumber numberWithLong:[currentCompany.products indexOfObject:product]];
+                for(ProductMO *productMO in companyMO.products) {
+                    if ([product.name isEqualToString:productMO.name]){
+                        productMO.index = product.index;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+    [self saveChanges];
+}
 
 
 
 
 -(void)createCompaniesAndProducts
 {
-    self.apple = [[Company alloc] init];
-    self.samsung = [[Company alloc] init];
-    self.windows = [[Company alloc] init];
-    self.sony = [[Company alloc] init];
+    CompanyMO *apple = [NSEntityDescription insertNewObjectForEntityForName:@"CompanyMO" inManagedObjectContext:self.managedObjectContext];
+    CompanyMO *samsung = [NSEntityDescription insertNewObjectForEntityForName:@"CompanyMO" inManagedObjectContext:self.managedObjectContext];
+    CompanyMO *windows = [NSEntityDescription insertNewObjectForEntityForName:@"CompanyMO" inManagedObjectContext:self.managedObjectContext];
+    CompanyMO *sony = [NSEntityDescription insertNewObjectForEntityForName:@"CompanyMO" inManagedObjectContext:self.managedObjectContext];
     
-    self.apple.name = @"Apple";
-    self.samsung.name = @"Samsung";
-    self.windows.name = @"Windows";
-    self.sony.name = @"Sony";
+    apple.name = @"Apple";
+    apple.index = [NSNumber numberWithInt:0];
+    apple.symbol = @"aapl";
     
+    samsung.name = @"Samsung";
+    samsung.index = [NSNumber numberWithInt:1];
+    samsung.symbol = @"SSNLF";
     
-    self.apple.stockQuote = [[StockQuote alloc] init];
-    self.sony.stockQuote = [[StockQuote alloc] init];
-    self.windows.stockQuote = [[StockQuote alloc] init];
-    self.samsung.stockQuote = [[StockQuote alloc] init];
+    windows.name = @"Windows";
+    windows.index = [NSNumber numberWithInt:2];
+    windows.symbol = @"msft";
     
-    Product *ipad = [[Product alloc] init];
-    Product *ipod = [[Product alloc] init];
-    Product *iphone = [[Product alloc] init];
-    Product *galaxyS6 = [[Product alloc] init];
-    Product *galaxyNote = [[Product alloc] init];
-    Product *galaxyTab = [[Product alloc] init];
-    Product *xperiaZ = [[Product alloc] init];
-    Product *xperiaTab = [[Product alloc] init];
-    Product *smartBandTalk = [[Product alloc] init];
-    Product *lumia = [[Product alloc] init];
-    Product *surfacePro = [[Product alloc] init];
-    Product *microsoftBand = [[Product alloc] init];;
+    sony.name = @"Sony";
+    sony.index = [NSNumber numberWithInt:3];
+    sony.symbol = @"sne";
+    
+    ProductMO *ipad = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *ipod = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *iphone = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *galaxyS6 = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *galaxyNote = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *galaxyTab = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *xperiaZ = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *xperiaTab = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *smartBandTalk = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *lumia = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *surfacePro = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    ProductMO *microsoftBand = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
     
     ipad.name = @"iPad Air"; ipad.website = @"https://www.apple.com/ipad-air-2/";
     ipod.name = @"iPod Touch"; ipod.website = @"https://www.apple.com/ipod-touch/";
@@ -227,27 +349,32 @@
     surfacePro.name = @"Surface Pro 3 tablet"; surfacePro.website = @"http://www.microsoft.com/surface/en-us/devices/surface-pro-3";
     microsoftBand.name = @"Microsoft Band 2"; microsoftBand.website = @"http://www.microsoftstore.com/store/msusa/en_US/pdp/Microsoft-Band-2/productID.324438600";
     
-    self.apple.products = [NSMutableArray arrayWithObjects:ipad, ipod, iphone, nil];
-    self.samsung.products = [NSMutableArray arrayWithObjects:galaxyS6, galaxyNote, galaxyTab, nil];
-    self.windows.products = [NSMutableArray arrayWithObjects: xperiaZ, xperiaTab, smartBandTalk, nil];
-    self.sony.products = [NSMutableArray arrayWithObjects: lumia, surfacePro, microsoftBand, nil];
+    apple.products = [NSSet setWithObjects: ipad, ipod, iphone, nil];
+    samsung.products = [NSSet setWithObjects:galaxyS6, galaxyNote, galaxyTab, nil];
+    sony.products = [NSSet setWithObjects: xperiaZ, xperiaTab, smartBandTalk, nil];
+    windows.products = [NSSet setWithObjects: lumia, surfacePro, microsoftBand, nil];
 
-        //GET RESULTS FROM DICTIONARY AND PUT THEM IN self.Company.StockTicker
-        
-        
+    NSArray *companyMOList = [NSArray arrayWithObjects:apple, samsung, windows, sony, nil];
+    self.companyList = [NSMutableArray new];
     
-    
-    
-    
-    
-    self.companyList = [NSMutableArray arrayWithObjects:self.apple, self.samsung, self.windows, self.sony, nil];
-    
-    self.companyNameList = [NSMutableArray arrayWithObjects:self.apple.name, self.samsung.name, self.windows.name, self.sony.name, nil];
-    
-    
-    
-    
+    for(CompanyMO* companyMO in companyMOList){
+        Company *company = [[Company alloc] init];
+        company.name = companyMO.name;
+        company.index = companyMO.index;
+        company.symbol = companyMO.symbol;
+        company.products = [NSMutableArray new];
+        for(Product* productMO in companyMO.products){
+            Product *product = [[Product alloc] init];
+            product.name = productMO.name;
+            product.website = productMO.website;
+            [company.products addObject:product];
+        }
+        [self.companyList addObject:company];
+    }
 }
+
+
+
 
 //-(void) loadFile
 //{

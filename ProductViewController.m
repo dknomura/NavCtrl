@@ -17,7 +17,6 @@
 
 @property (strong, nonatomic) NSMutableDictionary *companyAndCompanyNamesDictionary;
 @property (strong, nonatomic) DAO *dao;
-@property (strong, nonatomic) Company *currentCompany;
 @property (retain, nonatomic) IBOutlet UpdateProductViewController *productUpdateController;
 
 
@@ -52,22 +51,19 @@
 }
 
 
-- (void)viewWillAppear:(BOOL)animated {
-    
+- (void)viewWillAppear:(BOOL)animated
+{
     [super viewWillAppear:animated];
     
-    NSMutableArray *companyNameList = [NSMutableArray new ];
-    
-    for (Company *company in self.dao.companyList){
-        [companyNameList addObject:company.name];
-    }
-    
-    self.companyAndCompanyNamesDictionary = [NSMutableDictionary dictionaryWithObjects: self.dao.companyList forKeys:companyNameList];
-    
-    
-    self.currentCompany = [self.companyAndCompanyNamesDictionary objectForKey:self.title];
-    
-    self.products = self.currentCompany.products;
+//    NSMutableArray *companyNameList = [NSMutableArray new];
+//    
+//    for (Company *company in self.dao.companyList){
+//        [companyNameList addObject:company.name];
+//    }
+//    
+//    self.companyAndCompanyNamesDictionary = [NSMutableDictionary dictionaryWithObjects: self.dao.companyList forKeys:companyNameList];
+//    
+//    self.currentCompany = [self.companyAndCompanyNamesDictionary objectForKey:self.title];
     
     [self.tableView reloadData];
 }
@@ -126,7 +122,7 @@
     [cell addGestureRecognizer:longPressRecognizer];
     longPressRecognizer.allowableMovement = 2;
     
-    cell.textLabel.text = [[self.products objectAtIndex: indexPath.row] name];
+    cell.textLabel.text = [[self.currentCompany.products objectAtIndex: indexPath.row] name];
     return cell;
 }
 
@@ -141,7 +137,7 @@
 
 -(UITableViewCellEditingStyle) tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.products count]- 1 == indexPath.row)
+    if ([self.currentCompany.products count]- 1 == indexPath.row)
     {
         return UITableViewCellEditingStyleInsert;
     }else
@@ -154,9 +150,9 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self.currentCompany.products removeObjectAtIndex:indexPath.row];
+        Product *productToRemove = [self.currentCompany.products objectAtIndex:indexPath.row];
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao updateCompanyList];
+        [self.dao deleteProduct:productToRemove forCompany:self.currentCompany];
 
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
@@ -164,10 +160,8 @@
         Product *product = [[Product alloc] init];
         product.name = @"New Product";
         //        Product *newProduct = [product mutableCopy];
-        [self.currentCompany.products insertObject:product atIndex:indexPath.row];
+        [self.dao addProduct:product forCompany:self.currentCompany];
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao updateCompanyList];
-
         [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }
@@ -182,7 +176,7 @@
     Product *productToMove = self.currentCompany.products[fromIndexPath.row];
     [self.currentCompany.products removeObjectAtIndex:fromIndexPath.row];
     [self.currentCompany.products insertObject:productToMove atIndex:toIndexPath.row];
-    [self.dao updateCompanyList];
+    [self.dao updateProductIndicesForCurrentCompany:self.currentCompany];
 
 }
 
@@ -203,7 +197,7 @@
     // Navigation logic may go here, for example:
     // Create the next view controller.
     
-    NSURL *url = [NSURL URLWithString:[[self.products objectAtIndex:indexPath.row] website]];
+    NSURL *url = [NSURL URLWithString:[[self.currentCompany.products objectAtIndex:indexPath.row] website]];
     
     WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.frame];
     NSURLRequest *request = [NSURLRequest requestWithURL: url];

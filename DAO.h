@@ -11,19 +11,15 @@
 #import "Product.h"
 #import "StockQuote.h"
 #import <sqlite3.h>
+#import "ProductMO.h"
+#import "CompanyMO.h"
 #import <CoreData/CoreData.h>
 
 @interface DAO : NSObject
 
-@property (nonatomic, strong) Company *currentCompany;
-
-@property (nonatomic, strong) Company *apple;
-@property (nonatomic, strong) Company *samsung;
-@property (nonatomic, strong) Company *windows;
-@property (nonatomic, strong) Company *sony;
+@property (nonatomic, strong) CompanyMO *currentCompany;
 
 @property (strong) NSManagedObjectContext *managedObjectContext;
-
 
 @property (nonatomic, strong) NSMutableArray *companyList;
 
@@ -40,21 +36,21 @@
 
 -(void) initializeCoreData;
 
-
--(void) saveFileWithCompanyList: (NSMutableArray*) companyList;
-
--(void) loadFile;
-
-
--(void) loadDefaults;
-
--(void) saveDefaultsWithCompanyList:(NSMutableArray*) companyList;
-
-
-
 -(void) createCompaniesAndProducts;
 
 +(instancetype) sharedInstance;
+
+-(void)updateCurrentCompany:(Company*)company;
+-(void)updateCurrentProduct:(Product *)product forCurrentCompany:(Company*)company;
+
+-(void) addCompany:(Company*)company;
+-(void) addProduct:(Product*) product forCompany:(Company*)company;
+
+-(void) deleteCompany:(Company*)company;
+-(void) deleteProduct:(Product*)product forCompany:(Company*)company;
+
+-(void) updateCompanyIndices;
+-(void) updateProductIndicesForCurrentCompany:(Company*)currentCompany;
 
 //
 //
