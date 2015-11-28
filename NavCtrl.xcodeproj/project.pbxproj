@@ -23,8 +23,8 @@
 		48A656EB18163F8700746D36 /* ProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A656E918163F8700746D36 /* ProductViewController.m */; };
 		48A656EE1816468000746D36 /* Sunflower.gif in Resources */ = {isa = PBXBuildFile; fileRef = 48A656ED1816468000746D36 /* Sunflower.gif */; };
 		9CC572521BFFAF4000D51122 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9CC572501BFFAF4000D51122 /* Model.xcdatamodeld */; };
-		AA30B09F1C056D9D00FB270C /* ProductMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = AA30B09C1C056D9D00FB270C /* ProductMO+CoreDataProperties.m */; };
-		AA30B0A01C056D9D00FB270C /* CompanyMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = AA30B09E1C056D9D00FB270C /* CompanyMO+CoreDataProperties.m */; };
+		AA63CBA21C09144E00FE3EF3 /* ProductMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = AA63CB9F1C09144E00FE3EF3 /* ProductMO+CoreDataProperties.m */; };
+		AA63CBA31C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = AA63CBA11C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.m */; };
 		AAE83E681C03CF4900487400 /* ProductMO.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE83E621C03CF4900487400 /* ProductMO.m */; };
 		AAE83E6A1C03CF4900487400 /* CompanyMO.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE83E661C03CF4900487400 /* CompanyMO.m */; };
 		AAEB97B71BFDB10600FD273E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */; };
@@ -76,10 +76,10 @@
 		48A656E918163F8700746D36 /* ProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProductViewController.m; path = ../ProductViewController.m; sourceTree = "<group>"; };
 		48A656ED1816468000746D36 /* Sunflower.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Sunflower.gif; sourceTree = "<group>"; };
 		9CC572511BFFAF4000D51122 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
-		AA30B09B1C056D9D00FB270C /* ProductMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ProductMO+CoreDataProperties.h"; sourceTree = "<group>"; };
-		AA30B09C1C056D9D00FB270C /* ProductMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ProductMO+CoreDataProperties.m"; sourceTree = "<group>"; };
-		AA30B09D1C056D9D00FB270C /* CompanyMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CompanyMO+CoreDataProperties.h"; sourceTree = "<group>"; };
-		AA30B09E1C056D9D00FB270C /* CompanyMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CompanyMO+CoreDataProperties.m"; sourceTree = "<group>"; };
+		AA63CB9E1C09144E00FE3EF3 /* ProductMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ProductMO+CoreDataProperties.h"; sourceTree = "<group>"; };
+		AA63CB9F1C09144E00FE3EF3 /* ProductMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ProductMO+CoreDataProperties.m"; sourceTree = "<group>"; };
+		AA63CBA01C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CompanyMO+CoreDataProperties.h"; sourceTree = "<group>"; };
+		AA63CBA11C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CompanyMO+CoreDataProperties.m"; sourceTree = "<group>"; };
 		AAE83E611C03CF4900487400 /* ProductMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductMO.h; sourceTree = "<group>"; };
 		AAE83E621C03CF4900487400 /* ProductMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductMO.m; sourceTree = "<group>"; };
 		AAE83E651C03CF4900487400 /* CompanyMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompanyMO.h; sourceTree = "<group>"; };
@@ -245,10 +245,10 @@
 			children = (
 				AAE83E611C03CF4900487400 /* ProductMO.h */,
 				AAE83E621C03CF4900487400 /* ProductMO.m */,
-				AA30B09B1C056D9D00FB270C /* ProductMO+CoreDataProperties.h */,
-				AA30B09C1C056D9D00FB270C /* ProductMO+CoreDataProperties.m */,
-				AA30B09D1C056D9D00FB270C /* CompanyMO+CoreDataProperties.h */,
-				AA30B09E1C056D9D00FB270C /* CompanyMO+CoreDataProperties.m */,
+				AA63CB9E1C09144E00FE3EF3 /* ProductMO+CoreDataProperties.h */,
+				AA63CB9F1C09144E00FE3EF3 /* ProductMO+CoreDataProperties.m */,
+				AA63CBA01C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.h */,
+				AA63CBA11C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.m */,
 				AAE83E651C03CF4900487400 /* CompanyMO.h */,
 				AAE83E661C03CF4900487400 /* CompanyMO.m */,
 			);
@@ -389,12 +389,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAEEE4891BF99DFC001533A8 /* Product.m in Sources */,
-				AA30B09F1C056D9D00FB270C /* ProductMO+CoreDataProperties.m in Sources */,
 				AAEEE4A01BF9A4CD001533A8 /* StockQuote.m in Sources */,
 				AAEEE49A1BF99EA8001533A8 /* UpdateProductViewController.m in Sources */,
 				AAEEE4881BF99DFC001533A8 /* DAO.m in Sources */,
 				AAEEE4991BF99EA8001533A8 /* ItemInputViewController.m in Sources */,
-				AA30B0A01C056D9D00FB270C /* CompanyMO+CoreDataProperties.m in Sources */,
+				AA63CBA21C09144E00FE3EF3 /* ProductMO+CoreDataProperties.m in Sources */,
+				AA63CBA31C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.m in Sources */,
 				48A656E618163C1B00746D36 /* CompanyViewController.m in Sources */,
 				AAEEE4871BF99DFC001533A8 /* Company.m in Sources */,
 				48A656C518163BF200746D36 /* NavControllerAppDelegate.m in Sources */,

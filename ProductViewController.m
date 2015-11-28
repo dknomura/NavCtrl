@@ -18,6 +18,8 @@
 @property (strong, nonatomic) NSMutableDictionary *companyAndCompanyNamesDictionary;
 @property (strong, nonatomic) DAO *dao;
 @property (retain, nonatomic) IBOutlet UpdateProductViewController *productUpdateController;
+@property (strong, nonatomic) UIBarButtonItem *undoButton;
+
 
 
 @end
@@ -214,6 +216,30 @@
     [self.navigationController pushViewController:webViewController animated:YES];
 }
 
+-(void) setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    [self.tableView setEditing:editing animated:YES];
+    
+    self.undoButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo target:self action:@selector(undoLastAction)];
+    
+    if (editing){
+        self.navigationItem.leftBarButtonItem = self.undoButton;
+    } else {
+        self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    }
+}
+
+-(void)undoLastAction
+{
+//    [self.dao.managedObjectContext.undoManager endUndoGrouping];
+//
+//    [self.dao.managedObjectContext.undoManager undoNestedGroup];
+    [self.dao.managedObjectContext undo];
+    
+    [self.dao loadCompanyListFromFetchedResults];
+    [self.tableView reloadData];
+}
 
 
 - (void)dealloc {

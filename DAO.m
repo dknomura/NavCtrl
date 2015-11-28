@@ -45,7 +45,10 @@
     NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     self.managedObjectContext= [[NSManagedObjectContext alloc]initWithConcurrencyType:NSMainQueueConcurrencyType];
     [self.managedObjectContext setPersistentStoreCoordinator:psc];
+    self.managedObjectContext.undoManager = [[NSUndoManager alloc]init];
     
+//    [self.managedObjectContext.undoManager beginUndoGrouping];
+
     
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -71,7 +74,7 @@
     }
     
     NSArray *results = self.companyFetchedResultsController.fetchedObjects;
-//    
+    
 //    [self clearManagedObjectContext];
 //    
 //    [self createCompaniesAndProducts];
@@ -79,36 +82,48 @@
     if ([results count] == 0){
         [self createCompaniesAndProducts];
     } else {
-        [self loadCompanyListFromFetchedResults:results];
+        [self loadCompanyListFromFetchedResults];
         
     }
 }
 
 
--(void) loadCompanyListFromFetchedResults:(NSArray*)results
+-(void) loadCompanyListFromFetchedResults
 {
-    self.companyList = [NSMutableArray new];
-    for (int i = 0; i < [results count]; i++){
-        [self.companyList addObject:[NSNumber numberWithInt:i]];
+    NSError *error = nil;
+    NSFetchRequest *companyFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
+    NSSortDescriptor *sortByIndex = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:TRUE];
+    companyFetchRequest.sortDescriptors = @[sortByIndex];
+    NSArray *companyResults = [self.managedObjectContext executeFetchRequest:companyFetchRequest error:&error];
+    if (!companyResults) {
+        [NSException raise:@"Fetch Failed" format:@"%@", error.localizedDescription];
     }
     
+    self.companyList = [NSMutableArray new];
+//    for (int i = 0; i < [results count]; i++){
+//        [self.companyList addObject:[NSNumber numberWithInt:i]];
+//    }
     
-    for(CompanyMO* companyMO in results){
+    
+    for(CompanyMO* companyMO in companyResults){
         Company *company = [[Company alloc] init];
         company.name = companyMO.name;
         company.stockQuote = companyMO.stockQuote;
         company.index = companyMO.index;
         company.symbol = companyMO.symbol;
+        company.uniqueID = companyMO.uniqueID;
         company.products = [NSMutableArray new];
         for(Product* productMO in companyMO.products){
             Product *product = [[Product alloc] init];
             product.index = productMO.index;
             product.name = productMO.name;
             product.website = productMO.website;
+            product.uniqueID = productMO.uniqueID;
             [company.products addObject:product];
         }
-        [self.companyList replaceObjectAtIndex:[company.index intValue] withObject:company];
+        [self.companyList addObject:company];
     }
+//    [self.managedObjectContext.undoManager beginUndoGrouping];
 }
 
 
@@ -119,6 +134,9 @@
     NSArray *companyMOList = [self.managedObjectContext executeFetchRequest:companyRequest error:nil];
     for (CompanyMO *companyMO in companyMOList){
         [self.managedObjectContext deleteObject:companyMO];
+        for (ProductMO *productMO in companyMO.products){
+            [self.managedObjectContext deleteObject:productMO];
+        }
     }
     [self saveChanges];
 }
@@ -153,6 +171,9 @@
     
     newCompanyMO.name = company.name;
     [self.companyList addObject:company];
+
+    [self setNewCompanyIDForCompanyMO:newCompanyMO];
+    
     [self updateCompanyIndices];
 }
 
@@ -163,7 +184,7 @@
     [self.companyFetchedResultsController performFetch:nil];
     
     for(CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
-        if([company.name isEqualToString:companyMO.name]){
+        if([company.uniqueID isEqualToNumber:companyMO.uniqueID]){
             [self.managedObjectContext deleteObject:companyMO];
             break;
         }
@@ -174,18 +195,20 @@
 
 -(void) addProduct:(Product *)product forCompany:(Company *)company
 {
+    [company.products addObject:product];
+    
     [self.companyFetchedResultsController performFetch:nil];
 
     for (CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
-        if ([companyMO.name isEqualToString:company.name]){
+        if ([companyMO.uniqueID isEqualToNumber:company.uniqueID]){
             ProductMO *newProductMO = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
             newProductMO.name = product.name;
             newProductMO.website = product.website;
             newProductMO.whoSells = companyMO;
+            [self setNewProductIDForProductMO:newProductMO];
             break;
         }
     }
-    [company.products addObject:product];
     [self updateProductIndicesForCurrentCompany:company];
 }
 
@@ -194,9 +217,9 @@
     [self.companyFetchedResultsController performFetch:nil];
 
     for(CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
-        if([companyMO.name isEqualToString:company.name]){
+        if([companyMO.uniqueID isEqualToNumber:company.uniqueID]){
             for (ProductMO *productMO in companyMO.products) {
-                if([product.name isEqualToString:productMO.name]){
+                if([product.uniqueID isEqualToNumber:productMO.uniqueID]){
                     [self.managedObjectContext deleteObject:productMO];
                 }
             }
@@ -211,7 +234,7 @@
     [self.companyFetchedResultsController performFetch:nil];
 
     for (CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
-        if ([company.index isEqualToNumber:companyMO.index]){
+        if ([company.uniqueID isEqualToNumber:companyMO.uniqueID]){
             companyMO.name = company.name;
             companyMO.symbol = company.symbol;
             for (int i = 0; i < [company.products count]; i++){
@@ -220,6 +243,7 @@
                 
                 if([companyMO.products count] <= i){
                     MOproductToUpdate = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+                    [self setNewProductIDForProductMO:MOproductToUpdate];
 
                 } else {
                     MOproductToUpdate = [[companyMO.products allObjects] objectAtIndex:i];
@@ -228,8 +252,9 @@
                 MOproductToUpdate.website = updatingProduct.website;
                 MOproductToUpdate.whoSells = companyMO;
                 }
-            }
+            break;
         }
+    }
     [self updateProductIndicesForCurrentCompany:company];
 }
 
@@ -245,9 +270,9 @@
     [self.companyFetchedResultsController performFetch:nil];
 
     for(CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
-        if ([companyMO.name isEqualToString:company.name]){
+        if ([companyMO.uniqueID isEqualToNumber: company.uniqueID]){
             for (ProductMO *productMO in companyMO.products){
-                if ([product.index isEqualToNumber:productMO.index]){
+                if ([product.uniqueID isEqualToNumber:productMO.uniqueID]){
                     productMO.website = product.website;
                     productMO.name = product.name;
                 }
@@ -263,13 +288,13 @@
     for (Company *company in self.companyList){
         company.index = [NSNumber numberWithLong:[self.companyList indexOfObject:company]];
         for (CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects){
-            if ([company.name isEqualToString:companyMO.name]){
+            if ([company.uniqueID isEqualToNumber: companyMO.uniqueID]){
                 companyMO.index = company.index;
                 break;
             }
         }
     }
-    [self saveChanges];
+//    [self saveChanges];
 }
 
 -(void) updateProductIndicesForCurrentCompany:(Company*)currentCompany
@@ -277,7 +302,7 @@
     [self.companyFetchedResultsController performFetch:nil];
 
     for (CompanyMO *companyMO in self.companyFetchedResultsController.fetchedObjects) {
-        if([companyMO.name isEqualToString:currentCompany.name]){
+        if([companyMO.uniqueID isEqualToNumber:currentCompany.uniqueID]){
             for (Product *product in currentCompany.products){
                 product.index = [NSNumber numberWithLong:[currentCompany.products indexOfObject:product]];
                 for(ProductMO *productMO in companyMO.products) {
@@ -289,11 +314,44 @@
             }
         }
     }
-    [self saveChanges];
+//    [self saveChanges];
 }
 
 
+-(void) setNewCompanyIDForCompanyMO:(CompanyMO*)newCompany
+{
+    NSFetchRequest *companyFetch = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
+    NSSortDescriptor *sortByID = [NSSortDescriptor sortDescriptorWithKey:@"uniqueID" ascending:FALSE];
+    [companyFetch setSortDescriptors:@[sortByID]];
+    NSArray *companyListDescendingByID = [self.managedObjectContext executeFetchRequest:companyFetch error:nil];
+    NSNumber *newCompanyID = [NSNumber numberWithInt:[[[companyListDescendingByID objectAtIndex:0] uniqueID] intValue] + 1];
+    newCompany.uniqueID = newCompanyID;
+    
+    for (Company *company in self.companyList){
+        if ([company.name isEqualToString:newCompany.name]){
+            company.uniqueID = newCompanyID;
+        }
+    }
+}
 
+-(void) setNewProductIDForProductMO:(ProductMO*)newProduct
+{
+    NSFetchRequest *productFetch = [NSFetchRequest fetchRequestWithEntityName:@"ProductMO"];
+    NSSortDescriptor *sortByID = [NSSortDescriptor sortDescriptorWithKey:@"uniqueID" ascending:FALSE];
+    [productFetch setSortDescriptors:@[sortByID]];
+    NSArray *productResult = [self.managedObjectContext executeFetchRequest:productFetch error:nil];
+    NSNumber *newProductID = [NSNumber numberWithInt:[[[productResult objectAtIndex:0] uniqueID] intValue] +1];
+    newProduct.uniqueID = newProductID;
+    
+    for (Company *company in self.companyList){
+        for (Product *product in company.products){
+            if ([product.name isEqualToString:newProduct.name]){
+                product.uniqueID = newProductID;
+            }
+        }
+    }
+
+}
 
 -(void)createCompaniesAndProducts
 {
@@ -305,18 +363,22 @@
     apple.name = @"Apple";
     apple.index = [NSNumber numberWithInt:0];
     apple.symbol = @"aapl";
+    apple.uniqueID = [NSNumber numberWithInt:0];
     
     samsung.name = @"Samsung";
     samsung.index = [NSNumber numberWithInt:1];
     samsung.symbol = @"SSNLF";
+    samsung.uniqueID = [NSNumber numberWithInt:1];
     
     windows.name = @"Windows";
     windows.index = [NSNumber numberWithInt:2];
     windows.symbol = @"msft";
+    windows.uniqueID = [NSNumber numberWithInt:2];
     
     sony.name = @"Sony";
     sony.index = [NSNumber numberWithInt:3];
     sony.symbol = @"sne";
+    sony.uniqueID = [NSNumber numberWithInt:3];
     
     ProductMO *ipad = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
     ProductMO *ipod = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
@@ -330,6 +392,7 @@
     ProductMO *lumia = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
     ProductMO *surfacePro = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
     ProductMO *microsoftBand = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
+    
     
     ipad.name = @"iPad Air"; ipad.website = @"https://www.apple.com/ipad-air-2/";
     ipod.name = @"iPod Touch"; ipod.website = @"https://www.apple.com/ipod-touch/";
@@ -353,6 +416,14 @@
     samsung.products = [NSSet setWithObjects:galaxyS6, galaxyNote, galaxyTab, nil];
     sony.products = [NSSet setWithObjects: xperiaZ, xperiaTab, smartBandTalk, nil];
     windows.products = [NSSet setWithObjects: lumia, surfacePro, microsoftBand, nil];
+    
+    NSFetchRequest *productsFetch = [NSFetchRequest fetchRequestWithEntityName:@"ProductMO"];
+    NSArray *productsResult = [self.managedObjectContext executeFetchRequest:productsFetch error:nil];
+    int ID = 0;
+    for(ProductMO *productMO in productsResult){
+        productMO.uniqueID = [NSNumber numberWithInt:ID];
+        ID++;
+    }
 
     NSArray *companyMOList = [NSArray arrayWithObjects:apple, samsung, windows, sony, nil];
     self.companyList = [NSMutableArray new];
@@ -362,11 +433,13 @@
         company.name = companyMO.name;
         company.index = companyMO.index;
         company.symbol = companyMO.symbol;
+        company.uniqueID = companyMO.uniqueID;
         company.products = [NSMutableArray new];
         for(Product* productMO in companyMO.products){
             Product *product = [[Product alloc] init];
             product.name = productMO.name;
             product.website = productMO.website;
+            product.uniqueID = productMO.uniqueID;
             [company.products addObject:product];
         }
         [self.companyList addObject:company];

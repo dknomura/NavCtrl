@@ -12,4 +12,6 @@
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSString *website;
 @property (strong, nonatomic) NSNumber *index;
+@property (nonatomic, strong) NSNumber *uniqueID;
+
 @end

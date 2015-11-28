@@ -24,6 +24,7 @@
                 <outlet property="dataSource" destination="-1" id="9"/>
                 <outlet property="delegate" destination="-1" id="10"/>
             </connections>
+            <point key="canvasLocation" x="317" y="-10"/>
         </tableView>
         <viewController id="Xwu-Pd-0Xh" userLabel="ProductViewController" customClass="ProductViewController">
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="blackOpaque"/>
@@ -89,13 +90,6 @@
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits"/>
                     </textField>
-                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a9L-1T-Vl1">
-                        <rect key="frame" x="323" y="723" width="34" height="30"/>
-                        <state key="normal" title="Save"/>
-                        <connections>
-                            <action selector="save:" destination="Cdf-ds-6wk" eventType="touchUpInside" id="i0R-Gf-WCU"/>
-                        </connections>
-                    </button>
                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="zwF-Dn-fYT">
                         <rect key="frame" x="157" y="530" width="150" height="30"/>
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -109,7 +103,7 @@
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Symbol" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Psr-IU-w6A">
                         <rect key="frame" x="19" y="224" width="58" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="qob-N5-dI0">
@@ -117,6 +111,13 @@
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits"/>
                     </textField>
+                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="a9L-1T-Vl1">
+                        <rect key="frame" x="323" y="626" width="34" height="30"/>
+                        <state key="normal" title="Save"/>
+                        <connections>
+                            <action selector="save:" destination="Cdf-ds-6wk" eventType="touchUpInside" id="i0R-Gf-WCU"/>
+                        </connections>
+                    </button>
                 </subviews>
                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
             </view>

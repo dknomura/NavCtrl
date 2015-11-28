@@ -11,11 +11,12 @@
 #import "ItemInputViewController.h"
 #import <sqlite3.h>
 
-@interface CompanyViewController ()
+@interface CompanyViewController (){
+    int newCompanyID;
+}
 @property (strong, nonatomic) DAO* dao;
-@property (strong, nonatomic) UIBarButtonItem *addButton;
+@property (strong, nonatomic) UIBarButtonItem *undoButton;
 @property (retain, nonatomic) IBOutlet ItemInputViewController *itemInputController;
-@property BOOL addButtonHit;
 
 @end
 
@@ -38,6 +39,10 @@
     [super viewDidLoad];
     
     self.dao = [DAO sharedInstance];
+    
+    [self.dao.managedObjectContext.undoManager registerUndoWithTarget:self handler:^(id  _Nonnull target) {
+        NSLog(@"Undo done");
+    }];
     
     
     // Uncomment the following line to preserve selection between presentations.
@@ -163,6 +168,13 @@
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
         Company *companyToAdd = [[Company alloc]init];
         companyToAdd.name = @"NewCompany";
+        
+        for (Company *company in self.dao.companyList){
+            if ([companyToAdd.name isEqualToString:company.name]){
+                companyToAdd.name = [NSString stringWithFormat:@"NewCompany%d", newCompanyID];
+                newCompanyID++;
+            }
+        }
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
         [self.dao addCompany:companyToAdd];
 
@@ -209,26 +221,50 @@
 
 #pragma mark - addButton Methods
 
-//-(void) setEditing:(BOOL)editing animated:(BOOL)animated
-//{
-//    [super setEditing:editing animated:animated];
-//    [self.tableView setEditing:editing animated:YES];
-//
-//    self.addButton= [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addItem:)];
-//
-//
-////    if (editing){
-////        self.navigationItem.leftBarButtonItem = self.addButton;
-////    } else {
-////        self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
-////    }
-//}
+-(void) setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    [self.tableView setEditing:editing animated:YES];
+
+    self.undoButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemUndo target:self action:@selector(undoLastAction)];
+
+    if (editing){
+        self.navigationItem.leftBarButtonItem = self.undoButton;
+    } else {
+        self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    }
+}
+
+-(void)undoLastAction
+{
+//    [self.dao.managedObjectContext.undoManager endUndoGrouping];
+//    [self.dao.managedObjectContext.undoManager undoNestedGroup];
+    [self.dao.managedObjectContext undo];
+    
+    
+    [self.dao loadCompanyListFromFetchedResults];
+    [self setStockQuotes];
+    [self.tableView reloadData];
+}
 
 
 -(void) setStockQuotes
 {
     NSMutableString *stockSymbolInURL = [NSMutableString new];
+    
     for (int i = 0; i < [self.dao.companyList count]; i++){
+        int numberOfSameSymbolInCompanyList = 0;
+        Company *companyAtIndexi = self.dao.companyList[i];
+        for (Company *company in self.dao.companyList){
+            if ([company.symbol isEqualToString:companyAtIndexi.symbol]) {
+                numberOfSameSymbolInCompanyList++;
+            }
+        }
+        if (numberOfSameSymbolInCompanyList > 1) {
+            companyAtIndexi.symbol = [NSString stringWithFormat:@"%@%d", [self.dao.companyList[i] symbol], numberOfSameSymbolInCompanyList];
+        }
+        
+        
         [stockSymbolInURL appendString: @"%22"];
         if ([self.dao.companyList[i] symbol]){
             [stockSymbolInURL appendString:[NSString stringWithFormat:@"%@", [self.dao.companyList[i] symbol]]];
@@ -266,12 +302,20 @@
         NSDictionary *resultsDictionary = [[jsonDictionary objectForKey:@"query"] objectForKey:@"results"];
         NSArray *quotesArray = [resultsDictionary objectForKey:@"quote"];
         
-
+        NSFetchRequest *companyFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
+        NSArray *companyMOList = [self.dao.managedObjectContext executeFetchRequest:companyFetchRequest error:nil];
         for (int i = 0; i< [self.dao.companyList count]; i++){
             Company *company = self.dao.companyList[i];
             company.symbol = [quotesArray[i] objectForKey:@"symbol"];
             company.stockQuote = [quotesArray[i] objectForKey:@"LastTradePriceOnly"];
             company.change = [quotesArray[i] objectForKey:@"Change"];
+            for (CompanyMO *companyMO in companyMOList){
+                if ([company.name isEqualToString:companyMO.name]){
+                    if ([company.symbol isKindOfClass:[NSString class]]) {
+                        companyMO.symbol = company.symbol;
+                    }
+                }
+            }
         }
 
         

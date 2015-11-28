@@ -2,7 +2,7 @@
 //  CompanyMO+CoreDataProperties.m
 //  NavCtrl
 //
-//  Created by Aditya Narayan on 11/24/15.
+//  Created by Aditya Narayan on 11/27/15.
 //  Copyright © 2015 Aditya Narayan. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -13,10 +13,12 @@
 
 @implementation CompanyMO (CoreDataProperties)
 
+@dynamic change;
+@dynamic index;
 @dynamic name;
 @dynamic stockQuote;
-@dynamic index;
 @dynamic symbol;
+@dynamic uniqueID;
 @dynamic products;
 
 @end

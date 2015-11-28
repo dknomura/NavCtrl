@@ -52,6 +52,9 @@
 -(void) updateCompanyIndices;
 -(void) updateProductIndicesForCurrentCompany:(Company*)currentCompany;
 
+-(void) loadCompanyListFromFetchedResults;
+
+
 //
 //
 //-(void) addProduct:(Product*)product forCurrentCompany: (Company*) company;

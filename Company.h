@@ -14,6 +14,7 @@
 @property (strong, nonatomic) NSString *symbol;
 @property (strong, nonatomic) NSString *stockQuote;
 @property (nonatomic, strong) NSString *change;
+@property (nonatomic, strong) NSNumber *uniqueID;
 
 @property (strong, nonatomic) NSMutableArray *products;
 @property (strong, nonatomic) NSNumber *index;
