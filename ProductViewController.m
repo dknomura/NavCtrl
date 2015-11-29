@@ -43,6 +43,11 @@
     
     self.dao = [DAO sharedInstance];
     
+    
+//    [self.dao.managedObjectContext.undoManager registerUndoWithTarget:self handler:^(id  _Nonnull target) {
+//        NSLog(@"Undo done");
+//    }];
+    
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
     
@@ -232,12 +237,17 @@
 
 -(void)undoLastAction
 {
-//    [self.dao.managedObjectContext.undoManager endUndoGrouping];
-//
-//    [self.dao.managedObjectContext.undoManager undoNestedGroup];
-    [self.dao.managedObjectContext undo];
-    
+    //    [self.dao.managedObjectContext.undoManager undoNestedGroup];
+    [self.dao.managedObjectContext.undoManager undo];
     [self.dao loadCompanyListFromFetchedResults];
+    
+    for (Company *company in self.dao.companyList){
+        if ([company.name isEqualToString:self.currentCompany.name]){
+            self.currentCompany = company;
+            break;
+        }
+    }
+    
     [self.tableView reloadData];
 }
 

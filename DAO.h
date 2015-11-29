@@ -33,6 +33,7 @@
 
 @property (nonatomic, strong) NSString *filePathString;
 
+@property (strong, nonatomic) NSFetchedResultsController *companyFetchedResultsController;
 
 -(void) initializeCoreData;
 

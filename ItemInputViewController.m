@@ -46,9 +46,7 @@
 -(void) viewWillAppear:(BOOL)animated
 {
     self.companyTextField.text = self.currentCompany.name;
-    if (![self.currentCompany.name isEqualToString:self.currentCompany.symbol]){
-        self.symbolTextField.text = self.currentCompany.symbol;
-    }
+    self.symbolTextField.text = self.currentCompany.symbol;
     
     NSInteger numberOfProducts = [self.currentCompany.products count];
     

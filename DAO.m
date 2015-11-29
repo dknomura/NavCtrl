@@ -10,7 +10,7 @@
 #import <sqlite3.h>
 
 @interface DAO()
-@property (strong, nonatomic) NSFetchedResultsController *companyFetchedResultsController;
+
 
 @end
 
@@ -32,7 +32,7 @@
 
 
 
-#pragma mark - Core Data methods
+#pragma mark - Core Data Initialization
 
 
 
@@ -44,11 +44,9 @@
     NSAssert(mom != nil, @"Error initializing ManagedObjectModel");
     NSPersistentStoreCoordinator *psc = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:mom];
     self.managedObjectContext= [[NSManagedObjectContext alloc]initWithConcurrencyType:NSMainQueueConcurrencyType];
-    [self.managedObjectContext setPersistentStoreCoordinator:psc];
     self.managedObjectContext.undoManager = [[NSUndoManager alloc]init];
+    self.managedObjectContext.persistentStoreCoordinator = psc;
     
-//    [self.managedObjectContext.undoManager beginUndoGrouping];
-
     
     NSError *error;
     NSFileManager *fileManager = [NSFileManager defaultManager];
@@ -74,7 +72,7 @@
     }
     
     NSArray *results = self.companyFetchedResultsController.fetchedObjects;
-    
+//    
 //    [self clearManagedObjectContext];
 //    
 //    [self createCompaniesAndProducts];
@@ -83,8 +81,12 @@
         [self createCompaniesAndProducts];
     } else {
         [self loadCompanyListFromFetchedResults];
-        
     }
+//    self.managedObjectContext.undoManager.groupsByEvent = YES;
+//    [self.managedObjectContext.undoManager beginUndoGrouping];
+    [self.managedObjectContext.undoManager registerUndoWithTarget:self handler:^(id  _Nonnull target) {
+        NSLog(@"Undo donedo");
+    }];
 }
 
 
@@ -123,7 +125,6 @@
         }
         [self.companyList addObject:company];
     }
-//    [self.managedObjectContext.undoManager beginUndoGrouping];
 }
 
 
@@ -165,6 +166,8 @@
 //    return companyMOList;
 //}
 
+#pragma  mark - add/update company/product
+
 -(void) addCompany:(Company*)company
 {
     CompanyMO *newCompanyMO = [NSEntityDescription insertNewObjectForEntityForName:@"CompanyMO" inManagedObjectContext:self.managedObjectContext];
@@ -203,7 +206,6 @@
         if ([companyMO.uniqueID isEqualToNumber:company.uniqueID]){
             ProductMO *newProductMO = [NSEntityDescription insertNewObjectForEntityForName:@"ProductMO" inManagedObjectContext:self.managedObjectContext];
             newProductMO.name = product.name;
-            newProductMO.website = product.website;
             newProductMO.whoSells = companyMO;
             [self setNewProductIDForProductMO:newProductMO];
             break;
@@ -279,7 +281,24 @@
             }
         }
     }
+    
+//    NSFetchRequest *testFetch = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
+//    NSSortDescriptor *sortByIndex = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:true];
+//    testFetch.sortDescriptors = @[sortByIndex];
+//    NSArray *testArray = [self.managedObjectContext executeFetchRequest:testFetch error:nil];
+//    NSLog(@"%@", testArray);
+    
+    
+//    [self.managedObjectContext.undoManager endUndoGrouping];
+//    [self.managedObjectContext.undoManager beginUndoGrouping];
+    [self.managedObjectContext.undoManager registerUndoWithTarget:self handler:^(id  _Nonnull target) {
+        NSLog(@"Undo donedo");
+    }];
+    
+    [self saveChanges];
 }
+
+#pragma mark- update indices/ set uniqueIDs
 
 -(void) updateCompanyIndices
 {
@@ -294,7 +313,23 @@
             }
         }
     }
-//    [self saveChanges];
+//    
+//    NSFetchRequest *testFetch = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
+//    NSSortDescriptor *sortByIndex = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:true];
+//    testFetch.sortDescriptors = @[sortByIndex];
+//    NSArray *testArray = [self.managedObjectContext executeFetchRequest:testFetch error:nil];
+//    NSLog(@"%@", testArray);
+    
+    
+//    [self.managedObjectContext.undoManager endUndoGrouping];
+//    [self.managedObjectContext.undoManager beginUndoGrouping];
+    
+    
+    [self.managedObjectContext.undoManager registerUndoWithTarget:self handler:^(id  _Nonnull target) {
+        NSLog(@"Undo donedo");
+    }];
+
+    [self saveChanges];
 }
 
 -(void) updateProductIndicesForCurrentCompany:(Company*)currentCompany
@@ -314,7 +349,19 @@
             }
         }
     }
-//    [self saveChanges];
+//    NSFetchRequest *testFetch = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
+//    NSSortDescriptor *sortByIndex = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:true];
+//    testFetch.sortDescriptors = @[sortByIndex];
+//    NSArray *testArray = [self.managedObjectContext executeFetchRequest:testFetch error:nil];
+//    NSLog(@"%@", testArray);
+    
+    
+//    [self.managedObjectContext.undoManager endUndoGrouping];
+//    [self.managedObjectContext.undoManager beginUndoGrouping];
+    [self.managedObjectContext.undoManager registerUndoWithTarget:self handler:^(id  _Nonnull target) {
+        NSLog(@"Undo donedo");
+    }];
+    [self saveChanges];
 }
 
 
@@ -324,7 +371,8 @@
     NSSortDescriptor *sortByID = [NSSortDescriptor sortDescriptorWithKey:@"uniqueID" ascending:FALSE];
     [companyFetch setSortDescriptors:@[sortByID]];
     NSArray *companyListDescendingByID = [self.managedObjectContext executeFetchRequest:companyFetch error:nil];
-    NSNumber *newCompanyID = [NSNumber numberWithInt:[[[companyListDescendingByID objectAtIndex:0] uniqueID] intValue] + 1];
+    int largestUniqueID = [[[companyListDescendingByID objectAtIndex:0] uniqueID] intValue];
+    NSNumber *newCompanyID = [NSNumber numberWithInt: largestUniqueID + 1];
     newCompany.uniqueID = newCompanyID;
     
     for (Company *company in self.companyList){
@@ -350,7 +398,6 @@
             }
         }
     }
-
 }
 
 -(void)createCompaniesAndProducts
@@ -444,6 +491,8 @@
         }
         [self.companyList addObject:company];
     }
+    
+    [self saveChanges];
 }
 
 

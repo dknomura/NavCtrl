@@ -40,9 +40,9 @@
     
     self.dao = [DAO sharedInstance];
     
-    [self.dao.managedObjectContext.undoManager registerUndoWithTarget:self handler:^(id  _Nonnull target) {
-        NSLog(@"Undo done");
-    }];
+//    [self.dao.managedObjectContext.undoManager registerUndoWithTarget:self handler:^(id  _Nonnull target) {
+//        NSLog(@"Undo done");
+//    }];
     
     
     // Uncomment the following line to preserve selection between presentations.
@@ -238,13 +238,31 @@
 -(void)undoLastAction
 {
 //    [self.dao.managedObjectContext.undoManager endUndoGrouping];
-//    [self.dao.managedObjectContext.undoManager undoNestedGroup];
-    [self.dao.managedObjectContext undo];
-    
-    
+    //    [self.dao.managedObjectContext.undoManager undoNestedGroup];
+    [self.dao.managedObjectContext.undoManager undo];
     [self.dao loadCompanyListFromFetchedResults];
     [self setStockQuotes];
     [self.tableView reloadData];
+
+//    if (self.dao.managedObjectContext.undoManager.groupingLevel != 0) {
+//        
+//        [self.dao.managedObjectContext.undoManager endUndoGrouping];
+//        //    [self.dao.managedObjectContext.undoManager undoNestedGroup];
+//        [self.dao.managedObjectContext.undoManager undo];
+//        
+//        NSFetchRequest *testFetch = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
+//        NSSortDescriptor *sortByIndex = [NSSortDescriptor sortDescriptorWithKey:@"index" ascending:true];
+//        testFetch.sortDescriptors = @[sortByIndex];
+//        NSArray *testArray = [self.dao.managedObjectContext executeFetchRequest:testFetch error:nil];
+//        NSLog(@"%@", testArray);
+//
+//        
+//        [self.dao loadCompanyListFromFetchedResults];
+//        [self setStockQuotes];
+//        [self.tableView reloadData];
+//    }
+//    [self.dao.managedObjectContext.undoManager beginUndoGrouping];
+
 }
 
 
@@ -253,23 +271,12 @@
     NSMutableString *stockSymbolInURL = [NSMutableString new];
     
     for (int i = 0; i < [self.dao.companyList count]; i++){
-        int numberOfSameSymbolInCompanyList = 0;
-        Company *companyAtIndexi = self.dao.companyList[i];
-        for (Company *company in self.dao.companyList){
-            if ([company.symbol isEqualToString:companyAtIndexi.symbol]) {
-                numberOfSameSymbolInCompanyList++;
-            }
-        }
-        if (numberOfSameSymbolInCompanyList > 1) {
-            companyAtIndexi.symbol = [NSString stringWithFormat:@"%@%d", [self.dao.companyList[i] symbol], numberOfSameSymbolInCompanyList];
-        }
-        
         
         [stockSymbolInURL appendString: @"%22"];
         if ([self.dao.companyList[i] symbol]){
             [stockSymbolInURL appendString:[NSString stringWithFormat:@"%@", [self.dao.companyList[i] symbol]]];
         } else {
-            [stockSymbolInURL appendString:[NSString stringWithFormat:@"%@", [self.dao.companyList[i] name]]];
+            [stockSymbolInURL appendString:[NSString stringWithFormat:@"%@", [self.dao.companyList[i] uniqueID]]];
         }
         if (i == [self.dao.companyList count] - 1){
             [stockSymbolInURL appendString:@"%22"];
@@ -302,20 +309,18 @@
         NSDictionary *resultsDictionary = [[jsonDictionary objectForKey:@"query"] objectForKey:@"results"];
         NSArray *quotesArray = [resultsDictionary objectForKey:@"quote"];
         
-        NSFetchRequest *companyFetchRequest = [NSFetchRequest fetchRequestWithEntityName:@"CompanyMO"];
-        NSArray *companyMOList = [self.dao.managedObjectContext executeFetchRequest:companyFetchRequest error:nil];
         for (int i = 0; i< [self.dao.companyList count]; i++){
             Company *company = self.dao.companyList[i];
             company.symbol = [quotesArray[i] objectForKey:@"symbol"];
             company.stockQuote = [quotesArray[i] objectForKey:@"LastTradePriceOnly"];
             company.change = [quotesArray[i] objectForKey:@"Change"];
-            for (CompanyMO *companyMO in companyMOList){
-                if ([company.name isEqualToString:companyMO.name]){
-                    if ([company.symbol isKindOfClass:[NSString class]]) {
-                        companyMO.symbol = company.symbol;
-                    }
-                }
-            }
+//            for (CompanyMO *companyMO in companyMOList){
+//                if ([company.name isEqualToString:companyMO.name]){
+//                    if ([company.symbol isKindOfClass:[NSString class]]) {
+//                        companyMO.symbol = company.symbol;
+//                    }
+//                }
+//            }
         }
 
         
