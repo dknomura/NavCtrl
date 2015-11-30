@@ -71,5 +71,53 @@
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "ProductViewController.h"
+            timestampString = "470608129.485044"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "13"
+            endingLineNumber = "13"
+            landmarkName = "currentCompany"
+            landmarkType = "19">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ProductViewController currentCompany]"
+                  moduleName = "NavCtrl"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/adityanarayan/Desktop/Daniel%20Nomura/Section%203-2%202/NavCtrl/ProductViewController.h"
+                  timestampString = "470616793.231444"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "12">
+               </Location>
+               <Location
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "-[ProductViewController setCurrentCompany:]"
+                  moduleName = "NavCtrl"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/adityanarayan/Desktop/Daniel%20Nomura/Section%203-2%202/NavCtrl/ProductViewController.h"
+                  timestampString = "470616793.231744"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "13"
+                  endingLineNumber = "13"
+                  offsetFromSymbolStart = "20">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

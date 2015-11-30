@@ -239,7 +239,7 @@
 {
 //    [self.dao.managedObjectContext.undoManager endUndoGrouping];
     //    [self.dao.managedObjectContext.undoManager undoNestedGroup];
-    [self.dao.managedObjectContext.undoManager undo];
+    [self.dao.managedObjectContext.undoManager undo]; 
     [self.dao loadCompanyListFromFetchedResults];
     [self setStockQuotes];
     [self.tableView reloadData];

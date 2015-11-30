@@ -9,6 +9,7 @@
 #import "NavControllerAppDelegate.h"
 #import "CompanyViewController.h"
 #import "DAO.h"
+#import "CompanyCollectionViewController.h"
 
 @interface NavControllerAppDelegate()
 
@@ -31,7 +32,7 @@
 
 //    [dao createCompaniesAndProducts];
     
-    CompanyViewController *rootController =[[CompanyViewController alloc]initWithNibName:@"CompanyViewController" bundle:nil];
+    CompanyCollectionViewController *rootController = [[CompanyCollectionViewController alloc] initWithNibName:@"CompanyViewController" bundle:nil];
     
     self.navigationController = [[UINavigationController alloc]initWithRootViewController:rootController];
     

@@ -72,7 +72,7 @@
     }
     
     NSArray *results = self.companyFetchedResultsController.fetchedObjects;
-//    
+    
 //    [self clearManagedObjectContext];
 //    
 //    [self createCompaniesAndProducts];
