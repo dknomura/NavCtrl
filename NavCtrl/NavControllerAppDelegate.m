@@ -32,12 +32,16 @@
 
 //    [dao createCompaniesAndProducts];
     
-    CompanyCollectionViewController *rootController = [[CompanyCollectionViewController alloc] initWithNibName:@"CompanyViewController" bundle:nil];
     
-    self.navigationController = [[UINavigationController alloc]initWithRootViewController:rootController];
     
+    UIStoryboard *storyboard = [UIStoryboard storyboardWithName:@"Storyboard" bundle:nil];
+
+    
+    self.navigationController = [storyboard instantiateInitialViewController];
+
+//
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    //  self.window addSubview:self.navigationController.view];
+      [self.window addSubview:self.navigationController.view];
     [self.window setRootViewController:self.navigationController];
     [self.window makeKeyAndVisible];
     return YES;

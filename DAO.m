@@ -38,7 +38,6 @@
 
 -(void) initializeCoreData
 {
-
     NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
     NSManagedObjectModel *mom = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
     NSAssert(mom != nil, @"Error initializing ManagedObjectModel");
@@ -72,7 +71,7 @@
     }
     
     NSArray *results = self.companyFetchedResultsController.fetchedObjects;
-    
+////    
 //    [self clearManagedObjectContext];
 //    
 //    [self createCompaniesAndProducts];
@@ -496,6 +495,73 @@
 }
 
 
+
+-(void) setStockQuotes
+{
+    NSMutableString *stockSymbolInURL = [NSMutableString new];
+    
+    for (int i = 0; i < [self.companyList count]; i++){
+        
+        [stockSymbolInURL appendString: @"%22"];
+        if ([self.companyList[i] symbol]){
+            [stockSymbolInURL appendString:[NSString stringWithFormat:@"%@", [self.companyList[i] symbol]]];
+        } else {
+            [stockSymbolInURL appendString:[NSString stringWithFormat:@"%@", [self.companyList[i] uniqueID]]];
+        }
+        if (i == [self.companyList count] - 1){
+            [stockSymbolInURL appendString:@"%22"];
+        } else {
+            [stockSymbolInURL appendString:@"%22%2C"];
+        }
+    }
+    
+    
+    NSMutableString *urlString = [NSMutableString stringWithString:@"https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20("];
+    [urlString appendString:stockSymbolInURL];
+    [urlString appendString:@")&format=json&diagnostics=true&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback="];
+    
+    NSURL *url = [NSURL URLWithString:urlString];
+    
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+    
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
+    
+//    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * data, NSURLResponse * response, NSError * error) {
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+        NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
+        if (error){
+            NSLog(@"Error with json get request: %@", error.localizedDescription);
+            abort();
+        }
+        NSDictionary *resultsDictionary = [[jsonDictionary objectForKey:@"query"] objectForKey:@"results"];
+        NSArray *quotesArray = [resultsDictionary objectForKey:@"quote"];
+        
+        for (int i = 0; i< [self.companyList count]; i++){
+            Company *company = self.companyList[i];
+            company.symbol = [quotesArray[i] objectForKey:@"symbol"];
+            company.stockQuote = [quotesArray[i] objectForKey:@"LastTradePriceOnly"];
+            company.change = [quotesArray[i] objectForKey:@"Change"];
+            //            for (CompanyMO *companyMO in companyMOList){
+            //                if ([company.name isEqualToString:companyMO.name]){
+            //                    if ([company.symbol isKindOfClass:[NSString class]]) {
+            //                        companyMO.symbol = company.symbol;
+            //                    }
+            //                }
+            //            }
+        }
+        
+        
+//        dispatch_async(dispatch_get_main_queue(), ^{
+//            [self.collectionView reloadData];
+//        });
+        
+    }];
+    [task resume];
+}
 
 
 //-(void) loadFile

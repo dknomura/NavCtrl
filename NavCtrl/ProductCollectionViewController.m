@@ -9,7 +9,7 @@
 #import "ProductCollectionViewController.h"
 #import "CollectionViewCellWithLabel.h"
 #import "UpdateProductViewController.h"
-
+#import <WebKit/WebKit.h>
 
 @interface ProductCollectionViewController ()
 @property (strong, nonatomic) DAO *dao;
@@ -19,7 +19,7 @@
 
 @implementation ProductCollectionViewController
 
-static NSString * const reuseIdentifier = @"Cell";
+static NSString * const reuseIdentifier = @"cvCell";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -28,7 +28,7 @@ static NSString * const reuseIdentifier = @"Cell";
     // self.clearsSelectionOnViewWillAppear = NO;
     
     // Register cell classes
-    [self.collectionView registerClass:[CollectionViewCellWithLabel class] forCellWithReuseIdentifier:@"cvCell"];
+    [self.collectionView registerClass:[CollectionViewCellWithLabel class] forCellWithReuseIdentifier:reuseIdentifier];
     
     self.dao = [DAO sharedInstance];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -79,9 +79,41 @@ static NSString * const reuseIdentifier = @"Cell";
     
     cell.companyNameLabel.text = currentProduct.name;
     
+    if (self.editing){
+        cell.hitToDeleteButton.hidden = false;
+    } else{
+        cell.hitToDeleteButton.hidden = true;
+    }
+    
     return cell;
 }
 
+-(void) collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    NSURL *url = [NSURL URLWithString:[[self.currentCompany.products objectAtIndex:indexPath.row] website]];
+    
+    WKWebView *webView = [[WKWebView alloc] initWithFrame:self.view.frame];
+    NSURLRequest *request = [NSURLRequest requestWithURL: url];
+    
+    [webView loadRequest:request];
+    
+    
+    UIViewController *webViewController = [[UIViewController alloc] init];
+    
+    webViewController.view = webView;
+    // Pass the selected object to the new view controller.
+    
+    // Push the view controller.
+    [self.navigationController pushViewController:webViewController animated:YES];
+
+}
+
+-(void) setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    
+    [self.collectionView reloadData];
+}
 #pragma mark <UICollectionViewDelegate>
 
 /*
@@ -98,7 +130,7 @@ static NSString * const reuseIdentifier = @"Cell";
 }
 */
 
-/*
+
 // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
 	return NO;
@@ -111,6 +143,6 @@ static NSString * const reuseIdentifier = @"Cell";
 - (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
 	
 }
-*/
+
 
 @end

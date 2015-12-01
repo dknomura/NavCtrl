@@ -17,7 +17,7 @@
 
 @interface DAO : NSObject
 
-@property (nonatomic, strong) CompanyMO *currentCompany;
+@property (nonatomic, strong) Company *currentCompany;
 
 @property (strong) NSManagedObjectContext *managedObjectContext;
 
@@ -54,6 +54,7 @@
 -(void) updateProductIndicesForCurrentCompany:(Company*)currentCompany;
 
 -(void) loadCompanyListFromFetchedResults;
+-(void) setStockQuotes;
 
 
 //

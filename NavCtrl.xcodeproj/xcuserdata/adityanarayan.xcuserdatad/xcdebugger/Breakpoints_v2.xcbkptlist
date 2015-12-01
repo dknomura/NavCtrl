@@ -26,31 +26,15 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "DAO.h"
-            timestampString = "470169099.658271"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "17"
-            endingLineNumber = "17"
-            landmarkName = "@interface DAO"
-            landmarkType = "2">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "DAO.m"
-            timestampString = "470455344.095456"
+            timestampString = "470691375.812532"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
             landmarkName = "-loadCompanyListFromFetchedResults"
             landmarkType = "5">
          </BreakpointContent>
@@ -85,38 +69,6 @@
             endingLineNumber = "13"
             landmarkName = "currentCompany"
             landmarkType = "19">
-            <Locations>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[ProductViewController currentCompany]"
-                  moduleName = "NavCtrl"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/adityanarayan/Desktop/Daniel%20Nomura/Section%203-2%202/NavCtrl/ProductViewController.h"
-                  timestampString = "470618314.030097"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "13"
-                  endingLineNumber = "13"
-                  offsetFromSymbolStart = "12">
-               </Location>
-               <Location
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "-[ProductViewController setCurrentCompany:]"
-                  moduleName = "NavCtrl"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/adityanarayan/Desktop/Daniel%20Nomura/Section%203-2%202/NavCtrl/ProductViewController.h"
-                  timestampString = "470618314.030415"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "13"
-                  endingLineNumber = "13"
-                  offsetFromSymbolStart = "20">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

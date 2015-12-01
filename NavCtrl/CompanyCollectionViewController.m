@@ -32,10 +32,11 @@ static NSString * const reuseIdentifier = @"cvCell";
     // Register cell classes
 //    
 //    CollectionViewCellWithLabel *collectionViewCellWithLabel = [[CollectionViewCellWithLabel alloc] initWithFrame:self.collectionView.frame];
-    
     [self.collectionView registerClass:[CollectionViewCellWithLabel class] forCellWithReuseIdentifier:reuseIdentifier];
     
-    // Do any additional setup after loading the view.
+    
+    UILongPressGestureRecognizer *longPressGesture = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongTouchGestureToMoveCells:)];
+    [self.collectionView addGestureRecognizer:longPressGesture];
     
     self.dao = [DAO sharedInstance];
     self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -110,7 +111,13 @@ static NSString * const reuseIdentifier = @"cvCell";
         cell.stockLabel.text = @"No stock information available";
     }
     cell.iconImage.image = [UIImage imageNamed:[NSString stringWithFormat:@"%@ icon.png", currentCompany.name]];
-
+    
+    if (self.editing){
+        cell.deleteButton.hidden = false;
+    } else {
+        cell.deleteButton.hidden = true;
+    }
+ 
     return cell;
 }
 
@@ -122,25 +129,59 @@ static NSString * const reuseIdentifier = @"cvCell";
 
 - (void) collectionView:(UICollectionView *)collectionView moveItemAtIndexPath:(NSIndexPath *)sourceIndexPath toIndexPath:(NSIndexPath *)destinationIndexPath
 {
-    Company *companyToMove = self.dao.companyList [sourceIndexPath.row];
-    [self.dao.companyList removeObjectAtIndex:sourceIndexPath.row];
-    [self.dao.companyList insertObject:companyToMove atIndex:destinationIndexPath.row];
-    [self.dao updateCompanyIndices];
+    [self.collectionView performBatchUpdates:^{
+        Company *companyToMove = [self.dao.companyList objectAtIndex:sourceIndexPath.row];
+        [self.dao.companyList removeObjectAtIndex:sourceIndexPath.row];
+        [self.dao.companyList insertObject:companyToMove atIndex:destinationIndexPath.row];
+        [self.dao updateCompanyIndices];
+
+    } completion:nil];
 }
+
+-(void) handleLongTouchGestureToMoveCells: (UILongPressGestureRecognizer*) gesture
+{
+    NSIndexPath *currentIndexPath = [self.collectionView indexPathForItemAtPoint:[gesture locationInView:self.collectionView]];
+//    UICollectionViewCell *currentCell = [self.collectionView cellForItemAtIndexPath:currentIndexPath];
+
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+            [self.collectionView beginInteractiveMovementForItemAtIndexPath:currentIndexPath];
+            break;
+        case UIGestureRecognizerStateChanged:
+            [self.collectionView updateInteractiveMovementTargetPosition:[gesture locationInView:gesture.view]];
+            break;
+        case UIGestureRecognizerStateEnded:
+            [self.collectionView endInteractiveMovement];
+            break;
+        default:
+            [self.collectionView cancelInteractiveMovement];
+            
+    }
+}
+
 
 
 -(void) collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    Company *currentCompany = [self.dao.companyList objectAtIndex:indexPath.row];
-    
-    self.productCollectionViewController = [[ProductCollectionViewController alloc] init];
-    
-    
-    self.productCollectionViewController.currentCompany = currentCompany;
-    
-    [self.navigationController
-     pushViewController:self.productCollectionViewController
-     animated:YES];
+    if (self.editing) {
+        [self removeCVCellAtIndexPath:indexPath];
+    } else {
+        Company *currentCompany = [self.dao.companyList objectAtIndex:indexPath.row];
+        
+        UICollectionViewFlowLayout *cvLayout = [[UICollectionViewFlowLayout alloc] init];
+        
+        cvLayout.itemSize = CGSizeMake(150, 150);
+        
+        self.productCollectionViewController = [[ProductCollectionViewController alloc] initWithCollectionViewLayout:cvLayout];
+        
+        self.productCollectionViewController.currentCompany = currentCompany;
+        self.dao.currentCompany = currentCompany;
+        
+        [self.navigationController
+         pushViewController:self.productCollectionViewController
+         animated:YES];
+
+    }
 }
 
 
@@ -160,20 +201,51 @@ static NSString * const reuseIdentifier = @"cvCell";
 }
 */
 
-/*
+
 // Uncomment these methods to specify if an action menu should be displayed for the specified item, and react to actions performed on the item
+
+-(void) setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+
+    [self.collectionView reloadData];
+}
+
+-(void) removeCVCellAtIndexPath:(NSIndexPath*)indexPath;
+{
+    [self.collectionView performBatchUpdates:^{
+        Company *companyToRemove = [self.dao.companyList objectAtIndex:indexPath.row];
+        [self.dao deleteCompany:companyToRemove];
+        [self.collectionView deleteItemsAtIndexPaths:@[indexPath]];
+//        [self.collectionView reloadData];
+    } completion:nil];
+}
+
+
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldShowMenuForItemAtIndexPath:(NSIndexPath *)indexPath {
 	return NO;
 }
 
-- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	return NO;
+- (BOOL)collectionView:(UICollectionView *)collectionView canPerformAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+//    action = @selector(removeCVCellAtIndexPath:);
+//
+//    CollectionViewCellWithLabel *currentCell = [self.companyList objectAtIndex:indexPath.row];
+//    sender = currentCell.deleteButton;
+    
+	return YES;
+    
 }
 
-- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender {
-	
+- (void)collectionView:(UICollectionView *)collectionView performAction:(SEL)action forItemAtIndexPath:(NSIndexPath *)indexPath withSender:(id)sender
+{
+//    action = @selector(removeCVCellAtIndexPath:);
+//
+//    CollectionViewCellWithLabel *currentCell = [self.companyList objectAtIndex:indexPath.row];
+//    sender = currentCell.deleteButton;
+
 }
-*/
+
 
 -(void) setStockQuotes
 {
@@ -220,7 +292,7 @@ static NSString * const reuseIdentifier = @"cvCell";
         
         for (int i = 0; i< [self.dao.companyList count]; i++){
             Company *company = self.dao.companyList[i];
-            company.symbol = [quotesArray[i] objectForKey:@"symbol"];
+            company.symbol = [quotesArray[i] objectForKey:@"Symbol"];
             company.stockQuote = [quotesArray[i] objectForKey:@"LastTradePriceOnly"];
             company.change = [quotesArray[i] objectForKey:@"Change"];
             //            for (CompanyMO *companyMO in companyMOList){

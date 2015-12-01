@@ -142,16 +142,16 @@
 }
 */
 
-- (void)dealloc {
-    [_companyTextField release];
-    [_productTextField1 release];
-    [_productTextField3 release];
-    [_productTextField3 release];
-    [_websiteTextField1 release];
-    [_websiteTextField2 release];
-    [_websiteTextField3 release];
-    [_productTextField3 release];
-    [_symbolTextField release];
-    [super dealloc];
-}
+//- (void)dealloc {
+//    [_companyTextField release];
+//    [_productTextField1 release];
+//    [_productTextField3 release];
+//    [_productTextField3 release];
+//    [_websiteTextField1 release];
+//    [_websiteTextField2 release];
+//    [_websiteTextField3 release];
+//    [_productTextField3 release];
+//    [_symbolTextField release];
+//    [super dealloc];
+//}
 @end

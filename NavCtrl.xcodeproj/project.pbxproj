@@ -29,6 +29,7 @@
 		AA61DF931C0CCF0E0030BBFE /* ProductCollectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AA61DF921C0CCF0E0030BBFE /* ProductCollectionViewController.m */; };
 		AA63CBA21C09144E00FE3EF3 /* ProductMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = AA63CB9F1C09144E00FE3EF3 /* ProductMO+CoreDataProperties.m */; };
 		AA63CBA31C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = AA63CBA11C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.m */; };
+		AAAE2C811C0DE22200640BE9 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AAAE2C801C0DE22200640BE9 /* Storyboard.storyboard */; };
 		AAE83E681C03CF4900487400 /* ProductMO.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE83E621C03CF4900487400 /* ProductMO.m */; };
 		AAE83E6A1C03CF4900487400 /* CompanyMO.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE83E661C03CF4900487400 /* CompanyMO.m */; };
 		AAEB97B71BFDB10600FD273E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */; };
@@ -91,6 +92,7 @@
 		AA63CB9F1C09144E00FE3EF3 /* ProductMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ProductMO+CoreDataProperties.m"; sourceTree = "<group>"; };
 		AA63CBA01C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CompanyMO+CoreDataProperties.h"; sourceTree = "<group>"; };
 		AA63CBA11C09144E00FE3EF3 /* CompanyMO+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CompanyMO+CoreDataProperties.m"; sourceTree = "<group>"; };
+		AAAE2C801C0DE22200640BE9 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Storyboard.storyboard; sourceTree = "<group>"; };
 		AAE83E611C03CF4900487400 /* ProductMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ProductMO.h; sourceTree = "<group>"; };
 		AAE83E621C03CF4900487400 /* ProductMO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ProductMO.m; sourceTree = "<group>"; };
 		AAE83E651C03CF4900487400 /* CompanyMO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CompanyMO.h; sourceTree = "<group>"; };
@@ -177,9 +179,7 @@
 		48A656A818163BF200746D36 = {
 			isa = PBXGroup;
 			children = (
-				AA35B7CC1C0CEE21006BC51E /* NibCell.xib */,
-				AA35B7CE1C0CEF03006BC51E /* CollectionViewCellWithLabel.h */,
-				AA35B7CF1C0CEF03006BC51E /* CollectionViewCellWithLabel.m */,
+				AA5393B81C0E1D3B000CF3DC /* CollectionViewCell */,
 				48A656BA18163BF200746D36 /* NavCtrl */,
 				48A656D318163BF200746D36 /* NavCtrlTests */,
 				48A656B318163BF200746D36 /* Frameworks */,
@@ -217,6 +217,7 @@
 				483796CD1BCBF7EB0062D5AB /* ProductViewController */,
 				48A656C618163BF200746D36 /* Images.xcassets */,
 				AAEEE48A1BF99E1E001533A8 /* CompanyViewController.xib */,
+				AAAE2C801C0DE22200640BE9 /* Storyboard.storyboard */,
 				AAEEE49B1BF99EAF001533A8 /* ItemInputController */,
 				AAEEE48C1BF99E24001533A8 /* DAO */,
 				48A656BB18163BF200746D36 /* Supporting Files */,
@@ -272,6 +273,16 @@
 			);
 			name = ManagedObjects;
 			path = ..;
+			sourceTree = "<group>";
+		};
+		AA5393B81C0E1D3B000CF3DC /* CollectionViewCell */ = {
+			isa = PBXGroup;
+			children = (
+				AA35B7CC1C0CEE21006BC51E /* NibCell.xib */,
+				AA35B7CE1C0CEF03006BC51E /* CollectionViewCellWithLabel.h */,
+				AA35B7CF1C0CEF03006BC51E /* CollectionViewCellWithLabel.m */,
+			);
+			name = CollectionViewCell;
 			sourceTree = "<group>";
 		};
 		AAEEE48C1BF99E24001533A8 /* DAO */ = {
@@ -380,6 +391,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AAEEE48B1BF99E1E001533A8 /* CompanyViewController.xib in Resources */,
+				AAAE2C811C0DE22200640BE9 /* Storyboard.storyboard in Resources */,
 				AAEEE4931BF99E94001533A8 /* Sony icon.png in Resources */,
 				AAEEE4911BF99E94001533A8 /* Apple icon.png in Resources */,
 				AA35B7CD1C0CEE21006BC51E /* NibCell.xib in Resources */,
