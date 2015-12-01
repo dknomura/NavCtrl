@@ -130,7 +130,7 @@
 
 -(void) clearManagedObjectContext
 {
-    NSFetchRequest *companyRequest = [[[NSFetchRequest alloc] init] autorelease];
+    NSFetchRequest *companyRequest = [[NSFetchRequest alloc] init];
     [companyRequest setEntity:[NSEntityDescription entityForName:@"CompanyMO" inManagedObjectContext:self.managedObjectContext]];
     NSArray *companyMOList = [self.managedObjectContext executeFetchRequest:companyRequest error:nil];
     for (CompanyMO *companyMO in companyMOList){

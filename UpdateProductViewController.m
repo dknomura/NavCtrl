@@ -46,11 +46,7 @@
 }
 */
 
-- (void)dealloc {
-    [_productTextField release];
-    [_websiteTextField release];
-    [super dealloc];
-}
+
 - (IBAction)save:(id)sender
 {
     self.currentProduct.name = self.productTextField.text;

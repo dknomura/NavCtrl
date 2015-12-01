@@ -253,7 +253,7 @@
 
 
 - (void)dealloc {
-    [_productUpdateController release];
-    [super dealloc];
+//    [_productUpdateController release];
+//    [super dealloc];
 }
 @end

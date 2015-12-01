@@ -10,6 +10,10 @@
 #import "ProductViewController.h"
 #import "ItemInputViewController.h"
 #import <sqlite3.h>
+#import <UIKit/UIKit.h>
+#import "AFNetworking.h"
+
+
 
 @interface CompanyViewController (){
     int newCompanyID;
@@ -244,7 +248,7 @@
     [self setStockQuotes];
     [self.tableView reloadData];
 
-//    if (self.dao.managedObjectContext.undoManager.groupingLevel != 0) {
+    //    if (self.dao.managedObjectContext.undoManager.groupingLevel != 0) {
 //        
 //        [self.dao.managedObjectContext.undoManager endUndoGrouping];
 //        //    [self.dao.managedObjectContext.undoManager undoNestedGroup];
@@ -268,6 +272,8 @@
 
 -(void) setStockQuotes
 {
+    
+    
     NSMutableString *stockSymbolInURL = [NSMutableString new];
     
     for (int i = 0; i < [self.dao.companyList count]; i++){
@@ -298,14 +304,16 @@
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]];
     
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData * data, NSURLResponse * response, NSError * error) {
-        NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:&error];
-        if (error){
-            NSLog(@"Error with json get request: %@", error.localizedDescription);
-            abort();
-        }
+    AFHTTPRequestOperation *afOperation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    afOperation.responseSerializer = [AFJSONResponseSerializer serializer];
+    
+    AFHTTPRequestOperationManager *hroManager = [AFHTTPRequestOperationManager manager];
+    hroManager.requestSerializer.timeoutInterval = 60;
+
+    
+    [afOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation * _Nonnull operation, id  _Nonnull responseObject) {
+        NSDictionary *jsonDictionary = (NSDictionary*) responseObject;
         NSDictionary *resultsDictionary = [[jsonDictionary objectForKey:@"query"] objectForKey:@"results"];
         NSArray *quotesArray = [resultsDictionary objectForKey:@"quote"];
         
@@ -314,30 +322,59 @@
             company.symbol = [quotesArray[i] objectForKey:@"symbol"];
             company.stockQuote = [quotesArray[i] objectForKey:@"LastTradePriceOnly"];
             company.change = [quotesArray[i] objectForKey:@"Change"];
-//            for (CompanyMO *companyMO in companyMOList){
-//                if ([company.name isEqualToString:companyMO.name]){
-//                    if ([company.symbol isKindOfClass:[NSString class]]) {
-//                        companyMO.symbol = company.symbol;
-//                    }
-//                }
-//            }
+            //            for (CompanyMO *companyMO in companyMOList){
+            //                if ([company.name isEqualToString:companyMO.name]){
+            //                    if ([company.symbol isKindOfClass:[NSString class]]) {
+            //                        companyMO.symbol = company.symbol;
+            //                    }
+            //                }
+            //            }
         }
-
         
+        [self.tableView reloadData];
+
         dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
         });
         
+
+        
+    } failure:^(AFHTTPRequestOperation * _Nonnull operation, NSError * _Nonnull error) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error getting JSON data"
+                                                        message:error.localizedDescription
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
     }];
-    [task resume];
+    [afOperation start];
+    
+    
+    __block bool needToSetQuote = false;
+
+    [[AFNetworkReachabilityManager sharedManager] startMonitoring];
+    [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        switch (status) {
+            case AFNetworkReachabilityStatusReachableViaWiFi:
+                if (needToSetQuote){
+                    [self setStockQuotes];
+                    needToSetQuote = false;
+                }
+                break;
+            case AFNetworkReachabilityStatusNotReachable:
+            default:
+                NSLog(@"Not Reachable");
+                needToSetQuote = true;
+                break;
+        }
+    }];
 }
 
 
 
 
 - (void)dealloc {
-    [_companyInputViewController release];
-    [_itemInputController release];
-    [super dealloc];
+//    [_companyInputViewController release];
+//    [_itemInputController release];
+//    [super dealloc];
 }
 @end
