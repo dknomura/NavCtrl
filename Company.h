@@ -13,6 +13,6 @@
 @property (strong, nonatomic) NSString *name;
 @property (strong, nonatomic) NSMutableArray *products;
 @property (strong, nonatomic) StockQuote *stockQuote;
-
+@property (strong, nonatomic) NSNumber *index;
 
 @end

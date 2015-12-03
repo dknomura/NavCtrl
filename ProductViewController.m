@@ -17,8 +17,8 @@
 
 @property (strong, nonatomic) NSMutableDictionary *companyAndCompanyNamesDictionary;
 @property (strong, nonatomic) DAO *dao;
-@property (strong, nonatomic) Company *currentCompany;
 @property (retain, nonatomic) IBOutlet UpdateProductViewController *productUpdateController;
+@property (strong, nonatomic) UIBarButtonItem *addButton;
 
 
 @end
@@ -41,6 +41,7 @@
     [super viewDidLoad];
     
     self.dao = [DAO sharedInstance];
+    self.title = self.currentCompany.name;
     
     // Uncomment the following line to preserve selection between presentations.
     self.clearsSelectionOnViewWillAppear = NO;
@@ -55,19 +56,6 @@
 - (void)viewWillAppear:(BOOL)animated {
     
     [super viewWillAppear:animated];
-    
-    NSMutableArray *companyNameList = [NSMutableArray new ];
-    
-    for (Company *company in self.dao.companyList){
-        [companyNameList addObject:company.name];
-    }
-    
-    self.companyAndCompanyNamesDictionary = [NSMutableDictionary dictionaryWithObjects: self.dao.companyList forKeys:companyNameList];
-    
-    
-    self.currentCompany = [self.companyAndCompanyNamesDictionary objectForKey:self.title];
-    
-    self.products = self.currentCompany.products;
     
     [self.tableView reloadData];
 }
@@ -126,7 +114,7 @@
     [cell addGestureRecognizer:longPressRecognizer];
     longPressRecognizer.allowableMovement = 2;
     
-    cell.textLabel.text = [[self.products objectAtIndex: indexPath.row] name];
+    cell.textLabel.text = [[self.currentCompany.products objectAtIndex: indexPath.row] name];
     return cell;
 }
 
@@ -141,11 +129,7 @@
 
 -(UITableViewCellEditingStyle) tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.products count]- 1 == indexPath.row)
-    {
-        return UITableViewCellEditingStyleInsert;
-    }else
-        return  UITableViewCellEditingStyleDelete;
+        return UITableViewCellEditingStyleDelete;
 }
 
 
@@ -154,21 +138,13 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self.currentCompany.products removeObjectAtIndex:indexPath.row];
-//        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao updateCompanyList];
-
+        Product *currentProduct = [self.currentCompany.products objectAtIndex:indexPath.row];
+        //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
+        [self.dao databaseDeleteProduct:currentProduct  fromCompany:self.currentCompany];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        Product *product = [[Product alloc] init];
-        product.name = @"New Product";
-        //        Product *newProduct = [product mutableCopy];
-        [self.currentCompany.products insertObject:product atIndex:indexPath.row];
-//        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao updateCompanyList];
 
-        [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
     }
 }
@@ -178,12 +154,10 @@
 // Override to support rearranging the table view.
 - (void)tableView:(UITableView *)tableView moveRowAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
 {
-    
     Product *productToMove = self.currentCompany.products[fromIndexPath.row];
     [self.currentCompany.products removeObjectAtIndex:fromIndexPath.row];
     [self.currentCompany.products insertObject:productToMove atIndex:toIndexPath.row];
     [self.dao updateCompanyList];
-
 }
 
 
@@ -220,6 +194,34 @@
     [self.navigationController pushViewController:webViewController animated:YES];
 }
 
+#pragma mark - addButton Methods
+
+-(void) setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    [self.tableView setEditing:editing animated:YES];
+    
+    self.addButton= [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addProductTableViewCell)];
+    
+    
+    if (editing){
+        self.navigationItem.leftBarButtonItem = self.addButton;
+    } else {
+        self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    }
+}
+
+-(void) addProductTableViewCell
+{
+    Product *newProduct = [[Product alloc] init];
+    newProduct.name = @"New Product";
+    //        Product *newProduct = [product mutableCopy];
+    //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
+    [self.dao databaseAddProduct:newProduct fromCompany:self.currentCompany];
+    
+    NSIndexPath *indexPathForNewRow = [NSIndexPath indexPathForRow:[self.currentCompany.products indexOfObject:newProduct] inSection:0];
+    [self.tableView insertRowsAtIndexPaths:@[indexPathForNewRow] withRowAnimation:UITableViewRowAnimationLeft];
+}
 
 
 - (void)dealloc {

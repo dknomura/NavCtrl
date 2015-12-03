@@ -138,11 +138,7 @@
 
 -(UITableViewCellEditingStyle) tableView:(UITableView *)tableView editingStyleForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if ([self.dao.companyList count]- 1 == indexPath.row)
-    {
-        return UITableViewCellEditingStyleInsert;
-    }else
-        return  UITableViewCellEditingStyleDelete;
+    return UITableViewCellEditingStyleDelete;
 }
 
 
@@ -152,20 +148,13 @@
 {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
         // Delete the row from the data source
-        [self.dao.companyList removeObjectAtIndex:indexPath.row];
-        [self.dao updateCompanyList];
+        Company *companyToRemove = [self.dao.companyList objectAtIndex:indexPath.row];
+        [self.dao deleteCompanyFromDB:companyToRemove];
 //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-
-        
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        Company *company = [[Company alloc]init];
-        company.name = @"New Company";
-//        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-        [self.dao.companyList insertObject:company atIndex:indexPath.row];
-        [self.dao updateCompanyList];
-        [tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationLeft];
+
     }
 }
 
@@ -196,9 +185,8 @@
 // In a xib-based application, navigation from a table can be handled in -tableView:didSelectRowAtIndexPath:
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSString *pvcTitle = [[self.dao.companyList objectAtIndex:indexPath.row] name];
-    
-    self.productViewController.title = pvcTitle;
+    Company *currentCompany = [self.dao.companyList objectAtIndex:indexPath.row];
+    self.productViewController.currentCompany = currentCompany;
     
     [self.navigationController
      pushViewController:self.productViewController
@@ -207,22 +195,36 @@
     
 }
 
+
+
 #pragma mark - addButton Methods
 
-//-(void) setEditing:(BOOL)editing animated:(BOOL)animated
-//{
-//    [super setEditing:editing animated:animated];
-//    [self.tableView setEditing:editing animated:YES];
-//
-//    self.addButton= [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addItem:)];
-//
-//
-////    if (editing){
-////        self.navigationItem.leftBarButtonItem = self.addButton;
-////    } else {
-////        self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
-////    }
-//}
+-(void) setEditing:(BOOL)editing animated:(BOOL)animated
+{
+    [super setEditing:editing animated:animated];
+    [self.tableView setEditing:editing animated:YES];
+
+    self.addButton= [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(addCompanyTableViewCell)];
+
+
+    if (editing){
+        self.navigationItem.leftBarButtonItem = self.addButton;
+    } else {
+        self.navigationItem.leftBarButtonItem = self.navigationItem.backBarButtonItem;
+    }
+}
+
+-(void) addCompanyTableViewCell
+{
+    Company *newCompany = [[Company alloc]init];
+    newCompany.name = @"New Company";
+    //        [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
+    [self.dao addCompanyToDB:newCompany];
+    
+    NSIndexPath *indexPathForNewRow = [NSIndexPath indexPathForRow:[self.dao.companyList indexOfObject:newCompany] inSection:0];
+    
+    [self.tableView insertRowsAtIndexPaths:@[indexPathForNewRow] withRowAnimation:UITableViewRowAnimationLeft];
+}
 
 
 -(void) setStockQuotes

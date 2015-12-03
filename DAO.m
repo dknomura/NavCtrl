@@ -91,7 +91,7 @@
             
         }
     } else {
-//        [self loadCompanyList];
+        [self loadCompanyList];
     }
     
     //    [self.fileManager createDirectoryAtPath:self.directoryPathString withIntermediateDirectories:false attributes:nil error:&error];
@@ -162,52 +162,58 @@
 }
 
 
-
--(void)updateCompanyList
+-(void) updateCompany:(Company*)company
 {
-    char *error;
-    if(sqlite3_open([self.filePathString UTF8String], &_companyDB)== SQLITE_OK){
-        const char *clearCompany_sql = [[NSString stringWithFormat: @"DELETE FROM company"] UTF8String];
-        if (sqlite3_exec(_companyDB, clearCompany_sql, NULL, NULL, &error)==SQLITE_OK){
-            
-            NSLog(@"Company Table cleared");
-            
-            const char *clearProduct_sql = [[NSString stringWithFormat: @"DELETE FROM product"] UTF8String];
-            if (sqlite3_exec(_companyDB, clearProduct_sql, NULL, NULL, &error)==SQLITE_OK){
-                NSLog(@"Product Table cleared");
-            
-            
-            for (int i = 0; i<[self.companyList count]; i++) {
-                Company *currentCompany = self.companyList[i];
-                const char* insertCompany = [[NSString stringWithFormat:@"INSERT INTO company (id, name) VALUES ('%d', '%@')", i, currentCompany.name] UTF8String];
-                if (sqlite3_exec(_companyDB, insertCompany, NULL, NULL, &error)==SQLITE_OK){
-                    NSLog(@"%@ inserted into company table", currentCompany.name);
-                    
-
-                        
-                        for (int j = 0; j< [currentCompany.products count]; j++){
-                            Product *currentProduct = currentCompany.products[j];
-                            const char *insertProduct = [[NSString stringWithFormat:@"INSERT INTO product (company_id, name, website) VALUES('%d', '%@', '%@')", i, currentProduct.name, currentProduct.website] UTF8String];
-                            if (sqlite3_exec(_companyDB, insertProduct, NULL, NULL, &error)==SQLITE_OK){
-                                NSLog(@"%@ inserted into product table for company: %@", currentProduct.name, currentCompany.name);
-                            } else {
-                                NSLog(@"%s", error);
-                            }
-                        }
-
-                    } else {
-                        NSLog(@"%s", error);
-                    }
-                }
-            }else {
-                NSLog(@"%s", error);
-            }
-        } else {
-            NSLog(@"%s", error);
-        }
-    }
     
 }
+
+-(void)updateProduct:(Product *)product forCompany:(Company *)company
+
+//-(void)updateCompanyList
+//{
+//    char *error;
+//    if(sqlite3_open([self.filePathString UTF8String], &_companyDB)== SQLITE_OK){
+//        const char *clearCompany_sql = [[NSString stringWithFormat: @"DELETE FROM company"] UTF8String];
+//        if (sqlite3_exec(_companyDB, clearCompany_sql, NULL, NULL, &error)==SQLITE_OK){
+//            
+//            NSLog(@"Company Table cleared");
+//            
+//            const char *clearProduct_sql = [[NSString stringWithFormat: @"DELETE FROM product"] UTF8String];
+//            if (sqlite3_exec(_companyDB, clearProduct_sql, NULL, NULL, &error)==SQLITE_OK){
+//                NSLog(@"Product Table cleared");
+//            
+//            
+//            for (int i = 0; i<[self.companyList count]; i++) {
+//                Company *currentCompany = self.companyList[i];
+//                const char* insertCompany = [[NSString stringWithFormat:@"INSERT INTO company (id, name) VALUES ('%d', '%@')", i, currentCompany.name] UTF8String];
+//                if (sqlite3_exec(_companyDB, insertCompany, NULL, NULL, &error)==SQLITE_OK){
+//                    NSLog(@"%@ inserted into company table", currentCompany.name);
+//                    
+//
+//                        
+//                        for (int j = 0; j< [currentCompany.products count]; j++){
+//                            Product *currentProduct = currentCompany.products[j];
+//                            const char *insertProduct = [[NSString stringWithFormat:@"INSERT INTO product (company_id, name, website) VALUES('%d', '%@', '%@')", i, currentProduct.name, currentProduct.website] UTF8String];
+//                            if (sqlite3_exec(_companyDB, insertProduct, NULL, NULL, &error)==SQLITE_OK){
+//                                NSLog(@"%@ inserted into product table for company: %@", currentProduct.name, currentCompany.name);
+//                            } else {
+//                                NSLog(@"%s", error);
+//                            }
+//                        }
+//
+//                    } else {
+//                        NSLog(@"%s", error);
+//                    }
+//                }
+//            }else {
+//                NSLog(@"%s", error);
+//            }
+//        } else {
+//            NSLog(@"%s", error);
+//        }
+//    }
+//    
+//}
 
 
 
@@ -222,7 +228,7 @@
         }
         sqlite3_close(_companyDB);
     }
-    [self loadCompanyList];
+//    [self loadCompanyList];
 }
 
 -(void) deleteCompanyFromDB:(Company *) company
@@ -246,7 +252,7 @@
         }
         sqlite3_close(_companyDB);
     }
-    [self loadCompanyList];
+//    [self loadCompanyList];
 }
 
 -(void) databaseDeleteProduct:(Product *)product fromCompany:(Company *)company
@@ -257,51 +263,33 @@
     [company.products removeObject:product];
 }
 
-#pragma mark -NSUserDefaults methods
--(void) saveDefaultsWithCompanyList:(NSMutableArray*) companyList
-{
-    NSData *encodedData = [NSKeyedArchiver archivedDataWithRootObject:companyList];
-    self.userDefaults = [NSUserDefaults standardUserDefaults];
-    [self.userDefaults setObject:encodedData forKey:@"SAVEDCompaniesList"];
-    [self.userDefaults synchronize];
-    
-}
-
-
--(void) loadDefaults
-{
-    self.userDefaults = [NSUserDefaults standardUserDefaults];
-    NSData *encodedData = [self.userDefaults objectForKey:@"SAVEDCompaniesList"];
-    NSMutableArray *savedCompaniesList = [NSKeyedUnarchiver unarchiveObjectWithData:encodedData];
-    self.companyList = savedCompaniesList;
-}
 
 
 #pragma mark- Update/Deleting Company/Product
 
 
--(void) addProduct:(Product*)product forCurrentCompany: (Company*) company
-{
-    [company.products addObject:product];
-}
-
--(void) removeProduct:(Product*)product forCurrentCompany: (Company*) company
-{
-    [company.products removeObject:product];
-}
-
--(void) addCompany: (Company*) company
-{
-    [self.companyList addObject:company];
-    [self.companyNameList addObject:company.name];
-}
-
--(void) removeCompany: (Company*) company
-{
-    [self.companyList removeObject:company];
-    [self.companyNameList removeObject:company.name];
-}
-
+//-(void) addProduct:(Product*)product forCurrentCompany: (Company*) company
+//{
+//    [company.products addObject:product];
+//}
+//
+//-(void) removeProduct:(Product*)product forCurrentCompany: (Company*) company
+//{
+//    [company.products removeObject:product];
+//}
+//
+//-(void) addCompany: (Company*) company
+//{
+//    [self.companyList addObject:company];
+//    [self.companyNameList addObject:company.name];
+//}
+//
+//-(void) removeCompany: (Company*) company
+//{
+//    [self.companyList removeObject:company];
+//    [self.companyNameList removeObject:company.name];
+//}
+//
 
 
 

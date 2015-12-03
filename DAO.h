@@ -43,6 +43,10 @@
 -(void) loadFile;
 
 
+-(void)updateProduct:(Product*)product forCompany:(Company*)company;
+-(void) updateCompanyBP:(Company*) company;
+
+
 -(void) loadDefaults;
 
 -(void) saveDefaultsWithCompanyList:(NSMutableArray*) companyList;

@@ -23,7 +23,7 @@
     
     // Override point for customization after application launch.
     DAO *dao = [DAO sharedInstance];
-    [dao createCompaniesAndProducts];
+//    [dao createCompaniesAndProducts];
     [dao createFileDirectory];
 
 //    

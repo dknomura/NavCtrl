@@ -21,6 +21,7 @@
 @property (retain, nonatomic) IBOutlet UITextField *websiteTextField3;
 @property (retain, nonatomic) IBOutlet UITextField *productTextField3;
 @property (strong, nonatomic) DAO *dao;
+@property (nonatomic) NSInteger numberOfProducts;
 
 @end
 
@@ -46,26 +47,26 @@
 {
     self.companyTextField.text = self.currentCompany.name;
     
-    NSInteger numberOfProducts = [self.currentCompany.products count];
+    self.numberOfProducts = [self.currentCompany.products count];
     
-    if (numberOfProducts > 0){
+    if (self.numberOfProducts > 0){
         self.productTextField1.text = [self.currentCompany.products [0] name];
     }
-    if (numberOfProducts > 1) {
+    if (self.numberOfProducts > 1) {
         self.productTextField2.text = [self.currentCompany.products [1] name];
     }
-    if (numberOfProducts > 2){
+    if (self.numberOfProducts > 2){
         self.productTextField3.text = [self.currentCompany.products [2] name];
     }
-    if (numberOfProducts > 0){
+    if (self.numberOfProducts > 0){
         self.websiteTextField1.text = [self.currentCompany.products [0] website];
     }
     
-    if (numberOfProducts > 1){
+    if (self.numberOfProducts > 1){
         self.websiteTextField2.text = [self.currentCompany.products [1] website];
 
     }
-    if (numberOfProducts > 2) {
+    if (self.numberOfProducts > 2) {
         self.websiteTextField3.text = [self.currentCompany.products [2] website];
 
     }
@@ -77,6 +78,16 @@
 
 - (IBAction)save:(id)sender
 {
+    int numberOfProductTextFields = 0;
+    NSArray *arrayOfTextFields = @[self.productTextField1, self.productTextField2, self.productTextField3];
+    
+    NSArray *arrayOfProducts = [NSArray new];
+    
+    for (UITextField *textField in arrayOfTextFields){
+        if (textField.text){
+            
+        }
+    }
     Product *product1 = [[Product alloc] init];
     Product *product2 = [[Product alloc] init];
     Product *product3 = [[Product alloc] init];
@@ -98,7 +109,6 @@
     self.currentCompany.name = self.companyTextField.text;
     
 //    [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
-    [self.dao updateCompanyList];
 
     
     self.companyTextField.text = nil;
