@@ -43,9 +43,11 @@
 -(void) loadFile;
 
 
--(void)updateProduct:(Product*)product forCompany:(Company*)company;
--(void) updateCompanyBP:(Company*) company;
+//-(void)updateProduct:(Product*)product forCompany:(Company*)company;
+//-(void) updateCompanyBP:(Company*) company;
 
+
+-(void) updateCompany:(Company*)company withName:(NSString*)name;
 
 -(void) loadDefaults;
 

@@ -108,6 +108,8 @@
     
     self.currentCompany.name = self.companyTextField.text;
     
+    [self.dao updateCompany:self.currentCompany withName:self.companyTextField.text];
+    
 //    [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
 
     
