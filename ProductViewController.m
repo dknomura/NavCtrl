@@ -82,7 +82,7 @@
 
 -(void) handleLongTouchGesture: (UILongPressGestureRecognizer*) gesture
 {
-    if (gesture.state == UIGestureRecognizerStateEnded){
+    if (gesture.state == UIGestureRecognizerStateRecognized){
         NSIndexPath *currentIndexPath = [self.tableView indexPathForRowAtPoint:[gesture locationInView:self.tableView]];
         UITableViewCell *currentCell = [self.tableView cellForRowAtIndexPath: currentIndexPath ];
         if (currentCell.textLabel.text){

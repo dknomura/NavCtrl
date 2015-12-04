@@ -14,12 +14,22 @@
 
 @interface ItemInputViewController ()
 @property (retain, nonatomic) IBOutlet UITextField *companyTextField;
+
 @property (retain, nonatomic) IBOutlet UITextField *productTextField1;
 @property (retain, nonatomic) IBOutlet UITextField *productTextField2;
+@property (retain, nonatomic) IBOutlet UITextField *productTextField3;
+
 @property (retain, nonatomic) IBOutlet UITextField *websiteTextField1;
 @property (retain, nonatomic) IBOutlet UITextField *websiteTextField2;
 @property (retain, nonatomic) IBOutlet UITextField *websiteTextField3;
-@property (retain, nonatomic) IBOutlet UITextField *productTextField3;
+
+@property (strong, nonatomic) NSMutableArray *productTextFieldList;
+@property (strong, nonatomic) NSMutableDictionary *textFieldsToUpdate;
+@property (strong, nonatomic) NSMutableDictionary *textFieldsToAdd;
+
+@property (strong, nonatomic) NSMutableArray *websiteTextFieldList;
+
+
 @property (strong, nonatomic) DAO *dao;
 @property (nonatomic) NSInteger numberOfProducts;
 
@@ -48,81 +58,78 @@
     self.companyTextField.text = self.currentCompany.name;
     
     self.numberOfProducts = [self.currentCompany.products count];
+ 
+    self.productTextFieldList = [NSMutableArray arrayWithArray: @[self.productTextField1, self.productTextField2, self.productTextField3]];
+    self.websiteTextFieldList= [NSMutableArray arrayWithArray:@[self.websiteTextField1, self.websiteTextField2, self.websiteTextField3]];
     
-    if (self.numberOfProducts > 0){
-        self.productTextField1.text = [self.currentCompany.products [0] name];
-    }
-    if (self.numberOfProducts > 1) {
-        self.productTextField2.text = [self.currentCompany.products [1] name];
-    }
-    if (self.numberOfProducts > 2){
-        self.productTextField3.text = [self.currentCompany.products [2] name];
-    }
-    if (self.numberOfProducts > 0){
-        self.websiteTextField1.text = [self.currentCompany.products [0] website];
-    }
+//    NSMutableArray *openingProductTextFieldList = [self.productTextFieldList copy];
+//    NSMutableArray *openingWebsiteTextFieldList = [self.websiteTextFieldList copy];
+//    
+//    NSArray *arrayOfTextFieldArrays = @[openingProductTextFieldList, openingWebsiteTextFieldList];
+//    for (NSMutableArray *array in arrayOfTextFieldArrays) {
+//        for (UITextField *textField in array){
+//            if (!textField.text){
+//                [array removeObject:textField];
+//            }
+//        }
+//    }
     
-    if (self.numberOfProducts > 1){
-        self.websiteTextField2.text = [self.currentCompany.products [1] website];
-
-    }
-    if (self.numberOfProducts > 2) {
-        self.websiteTextField3.text = [self.currentCompany.products [2] website];
-
-    }
-
+    self.textFieldsToAdd = [NSMutableDictionary new];
+    self.textFieldsToUpdate = [NSMutableDictionary new];
     
-
-
+    for (int i = 0; i < self.productTextFieldList.count; i++) {
+        UITextField *productTextField = [self.productTextFieldList objectAtIndex:i];
+        UITextField *websiteTextField = [self.websiteTextFieldList objectAtIndex:i];
+        if (self.numberOfProducts > i){
+            Product *currentProduct = self.currentCompany.products[i];
+            productTextField.text = currentProduct.name;
+            websiteTextField.text = currentProduct.website;
+            [self.textFieldsToUpdate setObject:@[productTextField, websiteTextField] forKey:[NSNumber numberWithInt: i]];
+        }
+        else {
+            [self.textFieldsToAdd setObject:@[productTextField, websiteTextField] forKey:[NSNumber numberWithInt: i]];
+            productTextField.text = nil;
+            websiteTextField.text = nil;
+        }
+    }
 }
+
 
 - (IBAction)save:(id)sender
 {
-    int numberOfProductTextFields = 0;
-    NSArray *arrayOfTextFields = @[self.productTextField1, self.productTextField2, self.productTextField3];
-    
-    NSArray *arrayOfProducts = [NSArray new];
-    
-    for (UITextField *textField in arrayOfTextFields){
-        if (textField.text){
-            
+//    NSMutableArray *productList = [NSMutableArray new];
+    for (int i = 0; i < self.productTextFieldList.count; i++) {
+        Product *newProduct = [[Product alloc] init];
+        NSArray *arrayOfTextFieldsToUpdate = [self.textFieldsToUpdate objectForKey:[NSNumber numberWithInt: i]];
+        NSArray *arrayOfTextFieldsToAdd = [self.textFieldsToAdd objectForKey:[NSNumber numberWithInt: i]];
+        if (arrayOfTextFieldsToAdd){
+            for (int i = 0; i < arrayOfTextFieldsToAdd.count; i++) {
+                UITextField *textField = arrayOfTextFieldsToAdd[i];
+                if (i == 0) newProduct.name = textField.text;
+                if (i== 1) newProduct.website = textField.text;
+            }
+            [self.dao databaseAddProduct:newProduct fromCompany:self.currentCompany];
+//            [productList addObject:newProduct];
+        }else{
+            Product *productToUpdate = [self.currentCompany.products objectAtIndex:i];
+            UITextField *productTextFieldToUpdate = arrayOfTextFieldsToUpdate[0];
+            UITextField *websiteTextFieldToUpdate = arrayOfTextFieldsToUpdate[1];
+            [self.dao updateProduct:productToUpdate name: productTextFieldToUpdate.text andWebsite:websiteTextFieldToUpdate.text];
+//            [productList addObject:productToUpdate];
         }
-    }
-    Product *product1 = [[Product alloc] init];
-    Product *product2 = [[Product alloc] init];
-    Product *product3 = [[Product alloc] init];
-    
-    product1.name = self.productTextField1.text;
-    product1.website = self.websiteTextField1.text;
-    
-    product2.name = self.productTextField2.text;
-    product2.website = self.websiteTextField2.text;
-    
-    product3.name = self.productTextField3.text;
-    product3.website = self.websiteTextField3.text;
-    
-    NSMutableArray *productsList = [NSMutableArray arrayWithObjects:product1, product2, product3, nil];
 
-    self.currentCompany.products = productsList;
-    
-    
-    self.currentCompany.name = self.companyTextField.text;
+        UITextField *productTextField = self.productTextFieldList[i];
+        UITextField *websiteTextField = self.websiteTextFieldList[i];
+        productTextField.text = nil;
+        websiteTextField.text = nil;
+    }
+
+//    self.currentCompany.products = productList;
     
     [self.dao updateCompany:self.currentCompany withName:self.companyTextField.text];
-    
-//    [self.dao saveDefaultsWithCompanyList:self.dao.companyList];
 
-    
     self.companyTextField.text = nil;
-    self.productTextField1.text = nil;
-    self.productTextField2.text = nil;
-    self.productTextField3.text = nil;
     
-    self.websiteTextField1.text = nil;
-    self.websiteTextField2.text = nil;
-    self.websiteTextField3.text = nil;
-
-
     [self.navigationController popViewControllerAnimated:YES];
 }
 

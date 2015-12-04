@@ -22,8 +22,10 @@
 		48A656E618163C1B00746D36 /* CompanyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A656E418163C1B00746D36 /* CompanyViewController.m */; };
 		48A656EB18163F8700746D36 /* ProductViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 48A656E918163F8700746D36 /* ProductViewController.m */; };
 		48A656EE1816468000746D36 /* Sunflower.gif in Resources */ = {isa = PBXBuildFile; fileRef = 48A656ED1816468000746D36 /* Sunflower.gif */; };
+		AACED81D1C112C5E00A6B059 /* sqllite in Resources */ = {isa = PBXBuildFile; fileRef = AACED81B1C112BE500A6B059 /* sqllite */; };
+		AACED81F1C11340300A6B059 /* sqllite2 in Resources */ = {isa = PBXBuildFile; fileRef = AACED81E1C11340300A6B059 /* sqllite2 */; };
+		AACED8211C1134E600A6B059 /* sqllite3 in Resources */ = {isa = PBXBuildFile; fileRef = AACED8201C1134E600A6B059 /* sqllite3 */; };
 		AAEB97B71BFDB10600FD273E /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */; };
-		AAEB97BF1BFE56CD00FD273E /* sqllite in Resources */ = {isa = PBXBuildFile; fileRef = AAEB97BE1BFE56CD00FD273E /* sqllite */; };
 		AAEEE4871BF99DFC001533A8 /* Company.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4821BF99DFC001533A8 /* Company.m */; };
 		AAEEE4881BF99DFC001533A8 /* DAO.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4841BF99DFC001533A8 /* DAO.m */; };
 		AAEEE4891BF99DFC001533A8 /* Product.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEEE4861BF99DFC001533A8 /* Product.m */; };
@@ -70,8 +72,10 @@
 		48A656E818163F8700746D36 /* ProductViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProductViewController.h; path = ../ProductViewController.h; sourceTree = "<group>"; };
 		48A656E918163F8700746D36 /* ProductViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProductViewController.m; path = ../ProductViewController.m; sourceTree = "<group>"; };
 		48A656ED1816468000746D36 /* Sunflower.gif */ = {isa = PBXFileReference; lastKnownFileType = image.gif; path = Sunflower.gif; sourceTree = "<group>"; };
+		AACED81B1C112BE500A6B059 /* sqllite */ = {isa = PBXFileReference; lastKnownFileType = file; path = sqllite; sourceTree = "<group>"; };
+		AACED81E1C11340300A6B059 /* sqllite2 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sqllite2; sourceTree = "<group>"; };
+		AACED8201C1134E600A6B059 /* sqllite3 */ = {isa = PBXFileReference; lastKnownFileType = file; path = sqllite3; sourceTree = "<group>"; };
 		AAEB97B61BFDB10600FD273E /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
-		AAEB97BE1BFE56CD00FD273E /* sqllite */ = {isa = PBXFileReference; lastKnownFileType = file; path = sqllite; sourceTree = "<group>"; };
 		AAEEE4811BF99DFC001533A8 /* Company.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Company.h; sourceTree = SOURCE_ROOT; };
 		AAEEE4821BF99DFC001533A8 /* Company.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Company.m; sourceTree = SOURCE_ROOT; };
 		AAEEE4831BF99DFC001533A8 /* DAO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DAO.h; sourceTree = SOURCE_ROOT; };
@@ -148,6 +152,7 @@
 		48A656A818163BF200746D36 = {
 			isa = PBXGroup;
 			children = (
+				AACED8201C1134E600A6B059 /* sqllite3 */,
 				48A656BA18163BF200746D36 /* NavCtrl */,
 				48A656D318163BF200746D36 /* NavCtrlTests */,
 				48A656B318163BF200746D36 /* Frameworks */,
@@ -199,6 +204,8 @@
 				AAEEE48D1BF99E94001533A8 /* Apple icon.png */,
 				AAEEE48E1BF99E94001533A8 /* Samsung icon.png */,
 				AAEEE48F1BF99E94001533A8 /* Sony icon.png */,
+				AACED81B1C112BE500A6B059 /* sqllite */,
+				AACED81E1C11340300A6B059 /* sqllite2 */,
 				AAEEE4901BF99E94001533A8 /* Windows icon.png */,
 				48A656BC18163BF200746D36 /* NavCtrl-Info.plist */,
 				48A656BD18163BF200746D36 /* InfoPlist.strings */,
@@ -237,7 +244,6 @@
 				AAEEE4861BF99DFC001533A8 /* Product.m */,
 				AAEEE49E1BF9A4CD001533A8 /* StockQuote.h */,
 				AAEEE49F1BF9A4CD001533A8 /* StockQuote.m */,
-				AAEB97BE1BFE56CD00FD273E /* sqllite */,
 			);
 			name = DAO;
 			sourceTree = "<group>";
@@ -329,15 +335,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AACED81F1C11340300A6B059 /* sqllite2 in Resources */,
 				AAEEE48B1BF99E1E001533A8 /* CompanyViewController.xib in Resources */,
 				AAEEE4931BF99E94001533A8 /* Sony icon.png in Resources */,
 				AAEEE4911BF99E94001533A8 /* Apple icon.png in Resources */,
 				AAEEE4921BF99E94001533A8 /* Samsung icon.png in Resources */,
 				48A656EE1816468000746D36 /* Sunflower.gif in Resources */,
+				AACED81D1C112C5E00A6B059 /* sqllite in Resources */,
 				48A656BF18163BF200746D36 /* InfoPlist.strings in Resources */,
+				AACED8211C1134E600A6B059 /* sqllite3 in Resources */,
 				48A656C718163BF200746D36 /* Images.xcassets in Resources */,
 				AAEEE4941BF99E94001533A8 /* Windows icon.png in Resources */,
-				AAEB97BF1BFE56CD00FD273E /* sqllite in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

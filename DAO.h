@@ -42,12 +42,9 @@
 
 -(void) loadFile;
 
-
-//-(void)updateProduct:(Product*)product forCompany:(Company*)company;
-//-(void) updateCompanyBP:(Company*) company;
-
-
 -(void) updateCompany:(Company*)company withName:(NSString*)name;
+-(void)updateProduct:(Product *)product name:(NSString*)name andWebsite:(NSString*)website;
+
 
 -(void) loadDefaults;
 

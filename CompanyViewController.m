@@ -83,7 +83,7 @@
 
 -(void) handleLongTouchGesture: (UILongPressGestureRecognizer*) gesture
 {
-    if (gesture.state == UIGestureRecognizerStateEnded){
+    if (gesture.state == UIGestureRecognizerStateBegan){
         NSIndexPath *currentIndexPath = [self.tableView indexPathForRowAtPoint:[gesture locationInView:self.tableView]];
         UITableViewCell *currentCell = [self.tableView cellForRowAtIndexPath: currentIndexPath ];
         if (currentCell.textLabel.text){
@@ -119,7 +119,7 @@
     
     cell.textLabel.text = currentCompany.name;
     if (currentCompany.stockQuote.quote){
-     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@, %@", currentCompany.stockQuote.quote, currentCompany.stockQuote.change];
+     cell.detailTextLabel.text = [NSString stringWithFormat:@"%@: %@, %@", currentCompany.stockQuote.symbol, currentCompany.stockQuote.quote, currentCompany.stockQuote.change];
     }else {
         cell.detailTextLabel.text = @"No stock information available";
     }
