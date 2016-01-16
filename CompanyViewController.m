@@ -349,10 +349,10 @@
     [afOperation start];
     
     
-    __block bool needToSetQuote = false;
 
     [[AFNetworkReachabilityManager sharedManager] startMonitoring];
     [[AFNetworkReachabilityManager sharedManager] setReachabilityStatusChangeBlock:^(AFNetworkReachabilityStatus status) {
+        bool needToSetQuote = false;
         switch (status) {
             case AFNetworkReachabilityStatusReachableViaWiFi:
                 if (needToSetQuote){
